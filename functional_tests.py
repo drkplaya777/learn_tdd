@@ -1,5 +1,9 @@
-from selenium import webdriver
+import time
 import unittest
+
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+
 
 
 class NewVisitorTest(unittest.TestCase):
@@ -13,22 +17,39 @@ class NewVisitorTest(unittest.TestCase):
     def test_can_start_a_list_and_retrieve_it_later(self):
         # Dancer has heard about a cool new online to-do app. He goes to check out 
         # it's homepage
-        
         self.browser.get('http://localhost:8000')
         
         # He notices the page title and header mention to-do lists
         self.assertIn('To-Do', self.browser.title)
-        self.fail('Finish the test!')
+        
+        header_text = self.browser.find_element_by_tag_name('h1').text
+        
+        self.assertIn('To-Do', header_text)
         
         # He is invited to enter a to-do item straight away
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        self.assertEqual(
+            inputbox.get_attribute('placeholder'), 
+            'Enter a to-do item'
+        )
 
         # He types "Buy blades oil" into a test box (Dancer's hobby is assasination)
+        inputbox.send_keys('Buy blades oil')
 
         # When he hits enter, the page updates, and now the page lists "1: Buy blades oil" 
         # as an item in a to-do list
+        inputbox.send_keys(Keys.ENTER)
+        time.sleep(1)
+        
+        table = self.browser.find_element_by_id('id_list_table')
+        rows = table.find_elements_by_tag_name('tr')
+        
+        self.assertTrue(
+            any(row.text == '1: Buy blades oil' for row in rows))
 
-        # there is still a tesxt box inviting him to add another item. he enters 
+        # there is still a text box inviting him to add another item. he enters 
         # "Clean obsidian blades" Dancer is VERY methodical about his blades 
+        self.fail('Finish the test!')
 
         # The page updates again, and now shows both items on his list
 
