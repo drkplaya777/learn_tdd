@@ -45,7 +45,8 @@ class NewVisitorTest(unittest.TestCase):
         rows = table.find_elements_by_tag_name('tr')
         
         self.assertTrue(
-            any(row.text == '1: Buy blades oil' for row in rows))
+            any(row.text == '1: Buy blades oil' for row in rows), 
+            "New to-do item did not appear in the table")
 
         # there is still a text box inviting him to add another item. he enters 
         # "Clean obsidian blades" Dancer is VERY methodical about his blades 
