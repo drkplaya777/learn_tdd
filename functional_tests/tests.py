@@ -32,7 +32,7 @@ class NewVisitorTest(LiveServerTestCase):
                     raise e
                 time.sleep(0.5)
     
-    def test_can_start_a_list_and_retrieve_it_later(self):
+    def test_can_start_a_list_for_one_user(self):
         # Dancer has heard about a cool new online to-do app. He goes to check out 
         # it's homepage
         self.browser.get(self.live_server_url)
@@ -78,4 +78,56 @@ class NewVisitorTest(LiveServerTestCase):
         # He visits the URL- his to do list is still there
 
         # Satisfied, he goes back to sleep
+        
+    def test_multiple_users_can_start_ists_at_different_urls(self):
+        # Dancer starts a new to-do list
+        self.browser.get(self.live_server_url)
+        
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy blades oil')
+        inputbox.send_keys(Keys.ENTER)
+        
+        self.wait_for_row_in_list_table('1: Buy blades oil')
+        
+        # He notices that his list has a unique URL
+        dancer_list_url = self.browser.current_url
+        
+        self.assertRegex(dancer_list_url, '/lists/.+')
+        
+        # Now a new user, Kellanved, comes along to the site
+        
+        ## We use a new browser session to makes sure that no inofrmation
+        ## of Dancer's is coming through from cookies etc
+        self.browser.quit()
+        self.browser = webdrier.Firefox()
+        
+        # Kellanved visits the home page. There is no sign of Dancer's list
+        self.browser.get(self.live_server_url)
+        
+        page_text = self.browser.find_element_by_tag_name('body').text
+        
+        self.assertNotIn('Buy blades oil', page_text)
+        self.assertNotIn('Clean obsidian blades', page_text)
+        
+        # Kellanved starts a new list by entering a new item. He is less interesting then
+        # Dancer
+        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox.send_keys('Buy robes')
+        inputbox.send_keys(Keys.ENTER)
+        
+        self.wait_for_row_in_list_table('1: Buy robes')
+        
+        # Kellanved gets his own unique URL
+        kellanved_list_url = self.browser.current_url
+        
+        self.assertRegex(kellanved_list_url, '/lists/.+')
+        self.assertNotEqual(kellanved_list_url, dancer_list_url)
+        
+        # Again there is no trace of Dancer's list
+        page_text = self.browser.find_element_by_tag_name('body').text
+        
+        self.assertNotIn('Buy blades oil', page_text)
+        self.assertIn('Buy robes', page_text)
+        
+        # Satisfied, they both go back to sleep
     
