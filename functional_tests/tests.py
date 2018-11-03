@@ -99,7 +99,7 @@ class NewVisitorTest(LiveServerTestCase):
         ## We use a new browser session to makes sure that no inofrmation
         ## of Dancer's is coming through from cookies etc
         self.browser.quit()
-        self.browser = webdrier.Firefox()
+        self.browser = webdriver.Firefox()
         
         # Kellanved visits the home page. There is no sign of Dancer's list
         self.browser.get(self.live_server_url)
