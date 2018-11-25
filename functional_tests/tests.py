@@ -105,11 +105,17 @@ class NewVisitorTest(StaticLiveServerTestCase):
         self.wait_for_row_in_list_table('2: Clean obsidian blades')
         
         # Dancer wonders whethere the site will remember his list. Then he sees that the 
-        # site generated  a unique URL for her -- There is some explantory text to that 
+        # site generated  a unique URL for him -- There is some explantory text to that 
         # effect
-        self.fail('Finish the test!')
-
+        dancer_list_url = self.browser.current_url
+        
+        self.assertRegex(dancer_list_url, '/lists/.+')
+        
         # He visits the URL- his to do list is still there
+        
+        page_text = self.browser.find_element_by_tag_name('body').text
+        
+        self.assertIn('Buy blades oil', page_text)
 
         # Satisfied, he goes back to sleep
         
