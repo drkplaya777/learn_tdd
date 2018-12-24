@@ -165,3 +165,8 @@ e.g. DEBUG_DJANGO_FALSE
     mv <source> <destination>
     git add <destintation>
     git rm <source>
+    
+# When using TDD, you're only committing code that is in a working state. The idea is to go from working state to working state
+
+# When using Selenium, if the page needs to refresh, you must put an explicit wait to ensure whatever item you're waiting for has loaded. Whenever you submit a form with
+# Keys.ENTER or click something thatis going to cause a page to load, you probably wnat an explicit wati fro your next assertion
