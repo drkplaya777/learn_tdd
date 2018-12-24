@@ -17,7 +17,7 @@ eg, on Ubuntu:
     
 ## Nginx Virutal Host ocnfig
 
-* see enginz.temlate.conf
+* see enginx.temlate.conf
 * repalce DOMAIN with, e.g., staging.my-domain.com
 
 ## Systemd service
