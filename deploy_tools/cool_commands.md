@@ -2,6 +2,28 @@
 
 # Shell Commands
 ================
+
+## Run a shell command and assign to a variable/Run a shell command in a seperate terminal
+
+    $()
+    
+    e.g.
+    
+    export TAG=$(date +DEPLOYED-%F^CH%M)
+    
+
+## Set and expand a variable in bash
+
+    TEST=$(date +DEPLOYED-%F)   
+    echo $TEST  
+    
+## Specify date format via bash
+
+    date +(format option)
+    
+    $date +F
+
+
 ## readlink - Print value of a symbolic link or canonical file name
 
     readlink <path_to_symlink>
@@ -85,6 +107,14 @@
 ## How to run python one liners via terminal 
  
     $ echo DJANGO_SECRET_KEY=$(python3.6 -c "import random; print(''.join(random.SystemRandom().choices('abcefghijklmnopqrstuvwxyz123456789', k=50)))") >> .env
+    
+## Test individual module unitTests
+
+    python manage.py test <package_path.module>
+    
+    e.g.
+
+    python manage.py test functional_tests.test_list_item_validation
 
 # SystemD commands
 ================
@@ -153,4 +183,8 @@
 ## Show latest entry in git log as a hash
 
     git log -n 1 --format=%H
+    
+## Rename a file in git
+    
+    git mv <source> <destination>
 

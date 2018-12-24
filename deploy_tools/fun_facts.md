@@ -158,3 +158,10 @@ e.g. DEBUG_DJANGO_FALSE
 # Main advantage I currently see is running commands over SSH. I'm pretty sure that Fabric relies on Invoke(a shell command runner). Huh, I bet it's named invoke
 # as it invokes shell commans? Anyways, the main difference appears to be running the commands via SSH. Invoke appears to rely on subprocess which is in the 
 # python native language. 
+
+
+# Use git mv over mv when renaming a file in a git repo. git mv is a short hand for the following:
+
+    mv <source> <destination>
+    git add <destintation>
+    git rm <source>
