@@ -8,7 +8,7 @@
   
 * Have a place holder test for *EVERY* function and class
 
-* Don't refactor from failing tests! Working state to working state! 
+* Don't refactor from failing tests! Working state to working state! The latest functional test you can ignore.
 
 * Don't forget the "Refactor" in "Red, Green, Refactor". The whole point of having test is to allow you to refactor your code! Use them and make your code (including tests)
   as clean as you can
@@ -64,6 +64,11 @@
 * To create and save an object in a single step, use the create() method
     e.g.
         List.objects.create()
+        
+* Djano Pattern
+    - Use the same view to process POST requests as to render the form they came from
+    
+     - e.g. _Current situation is that we have one view and URL for displaying a list and one view and URL for processing additions to that list. Combine those into one_
 
 # System Adminstration Facts
 ----------------------------
@@ -71,9 +76,10 @@
     - Create site file in sites-available
         -e.g. /etc/nginx/sites-available/superlists-staging.jlw
     - Add unix socket path to reverse proxy in location block in site file 
-        -e.g. location / {
-        proxy_pass http://unix:/tmp/superlists-staging.jlw.socket;
-    }
+        -e.g. 
+            location / {
+            proxy_pass http://unix:/tmp/superlists-staging.jlw.socket;
+        }
     - Bind Gunicorn to same unix socket path
         - e.g. ./virtualenv/bin/gunicorn --bind unix:/tmp/superlists-staging.jlw.socket superlists.wsgi:application
         
