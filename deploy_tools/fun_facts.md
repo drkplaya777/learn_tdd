@@ -8,7 +8,8 @@
   
 * Have a place holder test for *EVERY* function and class
 
-* Don't refactor from failing tests! Working state to working state! The latest functional test you can ignore.
+* Don't refactor from failing _unit_ tests! Working state to working state! The latest functional test you're creating, i.e. the current user story, that _IS_ OK to have failing
+when doing a unit test
 
 * Don't forget the "Refactor" in "Red, Green, Refactor". The whole point of having test is to allow you to refactor your code! Use them and make your code (including tests)
   as clean as you can
@@ -22,6 +23,10 @@
     - Update functional tests(integrated tests) to check for environment variable named
     STAGING. If set, all post requests should go to that URL. If not set, run against local
     developmenet server. 
+    
+* Three Strikes and Refactor
+    Copy and paste code once but on the third time, it's time to refactor. If you wait until you have three use cases, each might be slightly different, providing a 
+    better view fo what the common functionality is. If you refactor too early, you may find that the third use case doesnt quite fit your refactored code.
 
 # Python Facts
 --------------
@@ -146,7 +151,8 @@
 * Use name of variable to denote intent. (I'll fill this out more the more I learn)
 
         e.g. DEBUG_DJANGO_FALSE
-
+        
+* Maybe I should start checking for status codes in my unit tests for my API return
 
 # Deployment Facts
 ------------------

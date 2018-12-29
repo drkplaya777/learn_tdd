@@ -92,10 +92,10 @@
 
         
 # Danjgo Commands
-=================
+-----------------
 
 
-    ## Collect all static files in Django
+* Collect all static files in Django
 
         ./virtualenv/bin/python manage.py collectstatic
 
@@ -104,11 +104,11 @@
                 Copying '/home/shadowwalker/public_html/superlists/lists/static/base.css'
 
      
-    ## How to run python one liners via terminal 
+* How to run python one liners via terminal 
      
         $ echo DJANGO_SECRET_KEY=$(python3.6 -c "import random; print(''.join(random.SystemRandom().choices('abcefghijklmnopqrstuvwxyz123456789', k=50)))") >> .env
         
-    ## Test individual module unitTests
+* Test individual module unitTests
 
         python manage.py test <package_path.module>
         
@@ -116,6 +116,10 @@
 
         python manage.py test functional_tests.test_list_item_validation
         python manage.py test lists.tests.test_views
+        
+* How to run all functional and unittests
+
+        python manage.py test
 
 # SystemD commands
 ================
