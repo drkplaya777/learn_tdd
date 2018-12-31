@@ -62,6 +62,32 @@ when doing a unit test
         
 * Djano models have access to default field options. These can each be overridden. One of them is blank-False. This means that the model won't allow blanks to be saved in the database.
 
+* Reverse Resolution of URLs (How to not hardcode URLs in views/templates)
+> You can use the urls.py in your templates via the {% url %} syntax and in python use the reverse function. That will pull the endpoint from the ```<project>/urls.py```
+
+* Reverse Resolution of URLS to models <a name="reverse_resolution_models"></a>
+
+>Django has this weird, spooky action. Some would call it magic. In other words, it's _EXTREMELY_ implicit. Regardless, Django allows you to return a URL from your model. It sounds weird as it IS
+weird. It allows you to take the endpoint in the urlpatterns in  ```<project>/urls.py``` and append your model automatically. You must create a ```get_absolute_url``` method on your model. In this
+method, you use the reverse function, passing in the name of the view that matches what is in your ```urls.py```. Doing this will allow your model to have access to the endpoint of the view. 
+
+        e.g.
+            ```lists/urls.py```
+            urlpatterns = [url(r'^lists/(\d+)/$', views.view_list, name='view_list')]
+            
+            ```lists/models.py```
+            class List(models.Model):
+        
+                def get_absolute_url(self):
+                    return reverse('view_list', args=[self.id])
+                
+            That allows the following to occur on models:
+            
+            test_list = List.objects.create()
+            test_list.get_absolute_url() 
+            
+            lists/12        (assuming the id generated via create is 12)
+
 * Considered a quirk, the model save() method will not run validation against data being saved to the database. Validation means calling the full_clean() method on a djanjo model object.
   The full_clean() method validates the fields on the model, validates the model as a whole(whatever that means) and valiates uniqueness constraints. If you want to run these, since save() does not,
   then you must call full_clean() explicity. 
@@ -75,9 +101,15 @@ when doing a unit test
     
      - e.g. _Current situation is that we have one view and URL for displaying a list and one view and URL for processing additions to that list. Combine those into one_
      
-* Reverse Resolution of URLs (How to not hardcode URLs in views/templates)
+        
+* Returning redirect to model
+> Please see the section [Reverse Resolution Models](#reverse_resolution_models) on how to configure a model to have a URL. Once you've created a model, you will need to add a method named `get_absolute_url`.
+That will allow you in your view to pass the models to the `redirect` function. That will then return 'automagically' the URl to the model.
 
-    1. Create a url route in include file or directly in    
+        e.g.
+            list_ = List.objects.create()  
+            return redirect(list_)      
+        
 
 # System Adminstration Facts
 ----------------------------
