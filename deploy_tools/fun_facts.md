@@ -74,6 +74,10 @@ when doing a unit test
     - Use the same view to process POST requests as to render the form they came from
     
      - e.g. _Current situation is that we have one view and URL for displaying a list and one view and URL for processing additions to that list. Combine those into one_
+     
+* Reverse Resolution of URLs (How to not hardcode URLs in views/templates)
+
+    1. Create a url route in include file or directly in    
 
 # System Adminstration Facts
 ----------------------------
