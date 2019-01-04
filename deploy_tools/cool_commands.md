@@ -89,6 +89,26 @@
 * **Edit a file without opening and create another file from output**
 
         cat ./deploy_tools/nginx.template.conf | sed "s/DOMAIN/jeremy_test_sed.org/g" | sudo tee superlists.ottg.eu
+        
+* **Search for a pattern and do a replace on result set**
+
+        grep -IZlr "item_text" lists | xargs -0 sed -i -e "s/item_text/text/g"
+        
+        Grep
+        
+            -I - ignores binary files
+            -Z - each result ends with a blank
+            -l - lists the path to the fiels
+            -r - searches recursively
+        
+        Xargs
+        
+            -0 - Each argument will be ending with a blank line
+        
+        Sed
+        
+            -i - Edits file in place with no back up being created
+            -e - Pattern being used for replace
 
         
 # Django Commands
