@@ -19,7 +19,7 @@ class NewVisitorTest(FunctionalTest):
         self.assertIn('To-Do', header_text)
         
         # He is invited to enter a to-do item straight away
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         self.assertEqual(
             inputbox.get_attribute('placeholder'), 
             'Enter a to-do item'
@@ -36,7 +36,7 @@ class NewVisitorTest(FunctionalTest):
 
         # there is still a text box inviting him to add another item. he enters 
         # "Clean obsidian blades" Dancer is VERY methodical about his blades 
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Clean obsidian blades')
         inputbox.send_keys(Keys.ENTER)
         
@@ -63,7 +63,7 @@ class NewVisitorTest(FunctionalTest):
         # Dancer starts a new to-do list
         self.browser.get(self.live_server_url)
         
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy blades oil')
         inputbox.send_keys(Keys.ENTER)
         
@@ -91,7 +91,7 @@ class NewVisitorTest(FunctionalTest):
         
         # Kellanved starts a new list by entering a new item. He is less interesting then
         # Dancer
-        inputbox = self.browser.find_element_by_id('id_new_item')
+        inputbox = self.get_item_input_box()
         inputbox.send_keys('Buy robes')
         inputbox.send_keys(Keys.ENTER)
         
