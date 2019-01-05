@@ -1,7 +1,32 @@
 # Purpose: To jot down anything I find interesting in my readings
 
+
+# Miscellaneous Facts
+--------------------
+* **Use name of variable to denote intent. (I'll fill this out more the more I learn)**
+
+        e.g. DEBUG_DJANGO_FALSE
+        
+* **Maybe I should start checking for status codes in my unit tests for my API return**
+
+* **Database Layer Validation**
+    
+    - Validation at the databse layer is the  ultimate guarantee of data integrity
+    - It's also inflexible as you can't ever have inconsistent data
+    - It's not designed for user-friendliness
+    
+* **DRY is your friend!**
+
+    - Don't Repeat Yourself
+    - Coding words to leave by!
+
+
 # TDD Facts
 -----------
+
+* **Don't forget to write the *MINIMAL* amount of code required to get a test to pass** 
+> The code will be refactored after the testing is working. 
+
 * **Place your unit tests in a tests directory. Include an __init__.py.**
 > This ensures that test runners can import the tests via a package. Your functional tests have no 
   such requirement. For functional tests, group them according to feature or user story. For unit tests, you probably want a seperate test file for each tested source
@@ -34,6 +59,9 @@ when doing a unit test
     
 * **Development-Driven Tests**
 > When you're exploring an Api, there is no need to stick to TDD. You can create unitTests if you like, but this isn't mandatory. Once you've completed exploration of the Api and need to integrate the Api, get back to the testing goat. BAAAAAAAH!
+
+* **Each UnitTest should test *ONE THING ONLY*!**
+> Breaking things into multiple tests is definetely worthwhile. It helps you isolate the exact problem you may have, when you later come and change your code and accidentally introduce a bug.
 
 # Python Facts
 --------------
@@ -183,7 +211,7 @@ provide form level and model level validation. Just like normal form validation,
 
     - **Model vs Form level validation**
     
-    > When validating a form, the errors are stored under the `errors` attribute. This attribute is a dictionary of error messages. In this dictionary, the keys are the field names, and the values are lists of Unicode strings representing the error messages. The error messages are stored in lists because a field can have multiple error messages.
+    > When validating a form, the errors are stored under the `errors` attribute. This attribute is a dictionary of error messages. In this dictionary, the keys are the field names from the form, and the values are lists of Unicode strings representing the error messages. The error messages are stored in lists because a field can have multiple error messages.
 
         -  Form level validation runs the following steps via the `clean()` method
         
@@ -238,10 +266,47 @@ provide form level and model level validation. Just like normal form validation,
                 Template:
                 <form method="POST" action="{% block form_action %}{% endblock %}">
                     {{ form.text }}
-                    {% csrf_token %}
-                    {% if error %}
+                </form>
+                
+                This will render the HTML equivalent of the text field in the ModelForm in the template with the appropriate input box with corresponding placeholder and class
+                
+* **How to render a ModelForm errors via a Django Template**
+> Each modelForm carries the `errors` attributes. This attribute is populated via the `full_clean()` method on the model attribute or via the `is_valid()` method on the ModelForm object. The `errors`
+ModelForm attribute is a dictionary with the keys being the fields contained within the ModelForm object. Each of the values is a list of the errors associated with the corresponding field in the model. The
+ModelForm fields can be accessed directly along with their corresponding `errors` dictionary. i.e. `ItemForm().text.errors`
+
+    1. Create your modelForm
+    2. Pass an instance of the form to the render function as the context
+    3. Update your template to render the form in the template
+    
+            eg. 
+                Form:
+                class ItemForm(forms.models.ModelForm):
+                    class Meta:
+                        model = Item
+                        fields = ('text',)
+                        widgets = {
+                            'text': forms.fields.TextInput(attrs={
+                                'placeholder': 'Enter a to-do item',
+                                'class': 'form-control input-lg'
+                            })
+                        }
+                        
+                        error_messages = {
+                            'text': {'required': EMPTY_ITEM_ERROR}
+                        }
+                        
+                View:
+                def home_page(request):
+                    return render(request, 'home.html', {'form': ItemForm() })
+                    
+                 
+                Template:
+                <form method="POST" action="{% block form_action %}{% endblock %}">
+                    {{ form.text }}
+                    {% if form.errors %}
                         <div class="form-group has-error">
-                            <span class="help-block">{{ error }}</span>
+                            <span class="help-block">{{ form.text.errors }}</span>
                         </div>
                     {% endif %}
                 </form>
@@ -319,19 +384,6 @@ provide form level and model level validation. Just like normal form validation,
         127.0.1.1	Havoc
         127.0.0.1   superlists-staging.jlw
 
-# Miscellaneous Facts
---------------------
-* Use name of variable to denote intent. (I'll fill this out more the more I learn)
-
-        e.g. DEBUG_DJANGO_FALSE
-        
-* Maybe I should start checking for status codes in my unit tests for my API return
-
-* Database Layer Validation
-    
-    - Validation at the databse layer is the  ultimate guarantee of data integrity
-    - It's also inflexible as you can't ever have inconsistent data
-    - It's not designed for user-friendliness
 
 # Deployment Facts
 ------------------
