@@ -153,6 +153,14 @@
         test_Form = ItemForm()
         
         test_form.as_p()
+        
+* **How to override a ModelForm `save()` method to save a foreign key
+> The example below shows overriding a `ModelForm` `save()` method to allow the Form to save an Item to list upon the invocation of `save()`
+
+        def save(self, for_list):
+            self.instance.list = for_list
+            
+            return super().save()
 
 # Systemd commands
 -------------------------------

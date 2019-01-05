@@ -19,6 +19,18 @@
 
     - Don't Repeat Yourself
     - Coding words to leave by!
+    
+    
+# Web development Facts
+-----------------------
+
+* **When running a `POST` operation, return a redirect to a new page**
+
+* **Keep your `views` thin**
+> if you find youreself looking at complex views, and having to write a lot of tests for them, it's time to start thinking about moving that logic elsewhere. 
+
+* **ALWAYS include validation on server side as well as front side**
+> Should never trust the front end will provide ample validation. 
 
 
 # TDD Facts
