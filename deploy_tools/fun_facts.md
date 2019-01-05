@@ -24,6 +24,8 @@
 # TDD Facts
 -----------
 
+* **Write tests for exploration of tools**
+
 * **Don't forget to write the *MINIMAL* amount of code required to get a test to pass** 
 > The code will be refactored after the testing is working. 
 
@@ -178,7 +180,7 @@ method, you use the reverse function, passing in the name of the view that match
     
     
 
-* **To create and save an object in a single step, use the create() method**
+* **To create and save an object in a single step, use the Django model create() method**
     
     e.g.
         List.objects.create()
@@ -206,6 +208,43 @@ provide form level and model level validation. Just like normal form validation,
 
     > Model validation (Model.full_clean()) is triggered from within the form validation step, right after the form’s clean() method is called.
     
+    > The `.instance` attribute on a `Modelform` represents the databse object that is being modified or created. 
+            
+            Showing them being used:
+              
+            form = ItemForm()
+            form.instance == Item
+    
+            Sample Form
+            
+                class ItemForm(forms.models.ModelForm):
+
+                    class Meta:
+                        model = Item
+                        fields = ('text',)
+                        widgets = {
+                            'text': forms.fields.TextInput(attrs={
+                                'placeholder': 'Enter a to-do item',
+                                'class': 'form-control input-lg'
+                            })
+                        }
+                        
+                        error_messages = {
+                            'text': {'required': EMPTY_ITEM_ERROR}
+                        }
+                    
+                    def save(self, for_list):
+                        self.instance.list = for_list
+                        
+                        return super().save()
+                    
+                    
+            Sample Model
+            
+                class Item(models.Model):
+                    text = models.TextField(default='')
+                    list = models.ForeignKey(List, default=None)
+            
     - **The ModelForm `save()` method creates and saves a database object from the data bound to the form.**
         - Note that if the form hasn’t been validated, calling save() will do so by checking form.errors. A ValueError will be raised if the data in the form doesn’t validate – i.e., if form.errors evaluates to True.
 
