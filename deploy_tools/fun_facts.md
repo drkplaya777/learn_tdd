@@ -36,6 +36,10 @@
 # TDD Facts
 -----------
 
+* **If test doesn't raise an exception, write a short comment as to why**
+
+* **Sometimes you should write a test for your stupidity**
+
 * **Write tests for exploration of tools**
 
 * **Don't forget to write the *MINIMAL* amount of code required to get a test to pass** 
@@ -166,11 +170,14 @@ method, you use the reverse function, passing in the name of the view that match
 
 * **Django quirk: the model save() method will not run validation against data being saved to the database.**
 
-> Validation means calling the full_clean() method on a djanjo model object.
-  The full_clean() method validates the fields on the model, validates the model as a whole(whatever that means) and valiates uniqueness constraints. If you want to run these, since save() does not,
-  then you must call full_clean() explicity. 
+    Validation means calling the `full_clean()` method on a djanjo model object.
+    The `full_clean()` method validates the fields on the model, validates the model as a whole(whatever that means and valiates uniqueness constraints. If you want to run these, since `save()` does not,
+    then you must call `full_clean()` explicity. 
+    
+    *Note*: 
+    Some data integrity errors *are* picked up on `save()`. It depends on whether the integrity constraint is enforced by the database or via the model. If via the model, this means the database has the constraint present due to a migration occurring. 
   
-* **Django quirk: A LOT of configuration for objects such as `ModelForm` objects occur with a nested class named `Meta`.**
+* **Django quirk: A LOT of configuration for Django objects such as `ModelForm` objects occur with a nested class named `Meta` including Django models**
         
         e.g. 
         
@@ -363,6 +370,43 @@ ModelForm fields can be accessed directly along with their corresponding `errors
                 </form>
                 
                 This will render the HTML equivalent of the text field in the ModelForm in the template with the appropriate input box with corresponding placeholder and class
+
+* **How Django derives table names** 
+    
+    To save you time, Django automatically derives the name of the database table from the name of your model class and the app that contains it. A model’s database table name is constructed by joining the model’s “app label” – the name you used in manage.py startapp – to the model’s class name, with an underscore between them.
+
+    For example, if you have an app bookstore (as created by manage.py startapp bookstore), a model defined as class Book will have a database table named bookstore_book.
+
+    To override the database table name, use the db_table parameter in class Meta.
+    
+* **Access related Django model objects**
+> What is a `related` Django model? It's how Django represents foreign key relationships within the ORM. So if you have a `List` table and an `Item` table and the `Item` table contains a foreign key for the 
+`List` table, these tables would be considered `related` Django models. Django provides the ability to quickly gather all related tables to a table whose foreign key is in use on other tables. You have to go
+through the main table in order to access the linked tables.  i.e `main_table.(name_of_linked_table_lower_case)_set`
+
+        e.g. 
+            
+            class List(models.Model):
+    
+                def get_absolute_url(self):
+                    return reverse('view_list', args=[self.id])
+                
+
+            class Item(models.Model):
+                text = models.TextField(default='')
+                list = models.ForeignKey(List, default=None)
+                
+            list_ = List.objects.create()
+            item = Item()
+            item.list = list_
+                
+            item.save()
+            
+            How to access the List related Items
+            
+            list_.item_set.all()
+            
+            
 
 # System Adminstration Facts
 ----------------------------

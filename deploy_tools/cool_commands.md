@@ -137,6 +137,14 @@
         python manage.py test functional_tests.test_list_item_validation
         python manage.py test lists.tests.test_views
         
+* **Test indivdual tests within a module**
+        
+        python manage.py test <package_path.module.class_name.method_name0>
+        
+        e.g.
+        
+        python manage.py test functional_tests.test_list_item_validation.ItemValidationTest.test_cannot_add_duplicate_items        
+        
 * **How to run all functional and unittests**
 
         python manage.py test
