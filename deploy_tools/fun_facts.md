@@ -196,8 +196,7 @@ method, you use the reverse function, passing in the name of the view that match
                 error_messages = {
                     'text': {'required': "You can't have an empty list item"}
                 }
-    
-    
+
 
 * **To create and save an object in a single step, use the Django model create() method**
     
@@ -224,45 +223,62 @@ That will allow you in your view to pass the models to the `redirect` function. 
 provide form level and model level validation. Just like normal form validation, model form validation is triggered implicitly when calling `is_valid()` or accessing the `errors` attribute and explicitly when calling `full_clean()`, although you will typically not use the latter method in practice.
 
     > The primary task of a Form object is to validate data. With a bound Form instance, call the `is_valid()` method to run validation and return a boolean designating whether the data was valid. It also has a side effect of populating the `errors` attribute
-
+    
+    > **Django quirk: _update_errors() allows overriding the corresponding model validation error Override any validation error messages defined at the model level with those defined at the form level.**
+    
+    > **Django quirk: The `ValidationError` has a `message_dict` attribute that you can override to pass custom errors back to the form**
+    
+                class ExistingListItemForm(ItemForm):
+            
+                    def __init__(self, for_list, *args, **kwargs):
+                        super().__init__(*args, **kwargs)
+                        self.instance.list = for_list
+                        
+                    def validate_unique(self):
+                        try:
+                            self.instance.validate_unique()
+                        except ValidationError as e:
+                            e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
+                            self._update_errors(e)
+                    
     > Model validation (Model.full_clean()) is triggered from within the form validation step, right after the form’s clean() method is called.
     
     > The `.instance` attribute on a `Modelform` represents the databse object that is being modified or created. 
             
-            Showing them being used:
-              
-            form = ItemForm()
-            form.instance == Item
-    
-            Sample Form
-            
-                class ItemForm(forms.models.ModelForm):
+                Showing them being used:
+                  
+                form = ItemForm()
+                form.instance == Item
+        
+                Sample Form
+                
+                    class ItemForm(forms.models.ModelForm):
 
-                    class Meta:
-                        model = Item
-                        fields = ('text',)
-                        widgets = {
-                            'text': forms.fields.TextInput(attrs={
-                                'placeholder': 'Enter a to-do item',
-                                'class': 'form-control input-lg'
-                            })
-                        }
+                        class Meta:
+                            model = Item
+                            fields = ('text',)
+                            widgets = {
+                                'text': forms.fields.TextInput(attrs={
+                                    'placeholder': 'Enter a to-do item',
+                                    'class': 'form-control input-lg'
+                                })
+                            }
+                            
+                            error_messages = {
+                                'text': {'required': EMPTY_ITEM_ERROR}
+                            }
                         
-                        error_messages = {
-                            'text': {'required': EMPTY_ITEM_ERROR}
-                        }
-                    
-                    def save(self, for_list):
-                        self.instance.list = for_list
+                        def save(self, for_list):
+                            self.instance.list = for_list
+                            
+                            return super().save()
                         
-                        return super().save()
-                    
-                    
-            Sample Model
-            
-                class Item(models.Model):
-                    text = models.TextField(default='')
-                    list = models.ForeignKey(List, default=None)
+                        
+                Sample Model
+                
+                    class Item(models.Model):
+                        text = models.TextField(default='')
+                        list = models.ForeignKey(List, default=None)
             
     - **The ModelForm `save()` method creates and saves a database object from the data bound to the form.**
         - Note that if the form hasn’t been validated, calling save() will do so by checking form.errors. A ValueError will be raised if the data in the form doesn’t validate – i.e., if form.errors evaluates to True.
@@ -271,27 +287,27 @@ provide form level and model level validation. Just like normal form validation,
     
     > When validating a form, the errors are stored under the `errors` attribute. This attribute is a dictionary of error messages. In this dictionary, the keys are the field names from the form, and the values are lists of Unicode strings representing the error messages. The error messages are stored in lists because a field can have multiple error messages.
 
-        -  Form level validation runs the following steps via the `clean()` method
-        
-            1. to_python()
-                - method on a Field is the first step in every validation. It coerces the value to a correct datatype and raises ValidationError if that is not possible.
+                -  Form level validation runs the following steps via the `clean()` method
                 
-            2. vaidate methond called on a field
-                - handles field-specific validation that is not suitable for a validator. It takes a value that has been coerced to a correct datatype and raises ValidationError on any error.
+                    1. to_python()
+                        - method on a Field is the first step in every validation. It coerces the value to a correct datatype and raises ValidationError if that is not possible.
+                        
+                    2. vaidate methond called on a field
+                        - handles field-specific validation that is not suitable for a validator. It takes a value that has been coerced to a correct datatype and raises ValidationError on any error.
+                        
+                    3. run_validators()
+                        -  runs all of the field’s validators and aggregates all the errors into a single ValidationError. You shouldn’t need to override this method.
                 
-            3. run_validators()
-                -  runs all of the field’s validators and aggregates all the errors into a single ValidationError. You shouldn’t need to override this method.
-        
-        - Model level validation runs the following steps via the `is_valid` method on a modelForm
-            
-            1. clean_fields() 
-                - This method will validate all fields on your model. The optional exclude argument lets you provide a list of field names to exclude from validation. It will raise a ValidationError if any fields fail validation.
-            
-            2. clean()
-                - This method should be used to provide custom model validation, and to modify attributes on your model if desired. 
-            
-            3. validate_unique()
-                - This method is similar to clean_fields(), but validates all uniqueness constraints on your model instead of individual field values.
+                - Model level validation runs the following steps via the `is_valid()` method on a modelForm
+                    
+                    1. clean_fields() 
+                        - This method will validate all fields on your model. The optional exclude argument lets you provide a list of field names to exclude from validation. It will raise a ValidationError if any fields fail validation.
+                    
+                    2. clean()
+                        - This method should be used to provide custom model validation, and to modify attributes on your model if desired. 
+                    
+                    3. validate_unique()
+                        - This method is similar to clean_fields(), but validates all uniqueness constraints on your model instead of individual field values.
     
 * **How to render a ModelForm via a Django Template**
 
