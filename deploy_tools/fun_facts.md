@@ -240,6 +240,35 @@ provide form level and model level validation. Just like normal form validation,
                         except ValidationError as e:
                             e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
                             self._update_errors(e)
+    > **Django Quirk: When using a ModelForm, you specify the fields to include in the form. If the Model itself contains a unique constraint and one of those fields _ISN'T_ one of the fields within the ModelForm, the unique constraint will *NOT* be enforced at the form level but the model level. In order to overcome this, you must call the model the for ModelForm is referencing, `validate_unique` method directly. You can access the model the ModelForm is referencing via the instance attribute. You then can call `validate_unique` on the model directly. You then need to ensure to override the `vaidate_unique` method on the ModelForm to have this behavior invoked**
+    
+                e.g. 
+                    class ExistingListItemForm(forms.models.ModelForm):
+                    
+                        class Meta:
+                            model = Item
+                            fields = ('text',)
+                            widgets = {
+                                'text': forms.fields.TextInput(attrs={
+                                    'placeholder': 'Enter a to-do item',
+                                    'class': 'form-control input-lg'
+                                })
+                            }
+                            
+                            error_messages = {
+                                'text': {'required': EMPTY_ITEM_ERROR}
+                            }
+        
+                        def __init__(self, for_list, *args, **kwargs):
+                            super().__init__(*args, **kwargs)
+                            self.instance.list = for_list
+                            
+                        def validate_unique(self):
+                            try:
+                                self.instance.validate_unique()
+                            except ValidationError as e:
+                                e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
+                                self._update_errors(e)
                     
     > Model validation (Model.full_clean()) is triggered from within the form validation step, right after the form’s clean() method is called.
     
