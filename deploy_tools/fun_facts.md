@@ -36,6 +36,8 @@
 # TDD Facts
 -----------
 
+* **For POST requests, make sure you test both the valid case and the invalid case**
+
 * **If test doesn't raise an exception, write a short comment as to why**
 
 * **Sometimes you should write a test for your stupidity**
@@ -105,6 +107,32 @@ when doing a unit test
         
 # Django Facts
 ----------------
+
+* **You can use the Django test case to test for which template was used in a view**
+
+* **You can check the context passed to a view to ensure a correct object was passed**
+
+* **Items to test in a Django view**
+
+    1) Use the Django test client
+    
+    2) Check the template used
+    
+    3) Check that any objects are the right ones or querysets have the correct items by checking the request context via the test client
+    
+    4) Check that any forms are of the correct class
+    
+    5)  Think about testing template logic: any for or if might deserve a minimal test
+    
+    6) For `POST` requests, make sure you test both the valid and invalid case
+    
+    7) Optionally, sanity-check that form is rendered and it's errors displayed
+    
+            e.g
+    
+                self.assertIsInstance(response.context['form'], ExistingListItemForm)
+                self.assertContains(response, escape(EMPTY_ITEM_ERROR)
+    
 
 * **Test Client**
 
