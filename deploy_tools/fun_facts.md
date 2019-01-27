@@ -32,9 +32,134 @@
 * **ALWAYS include validation on server side as well as front side**
 > Should never trust the front end will provide ample validation. 
 
+# Javascript/JQuery Facts
+-------------------------
+
+* **It's good practice to put yor script loads at the end of your body HTML, as it means the user doesn't have to wait for all your JavaSciprt to load before they can see something on the page. It also helps to make sure most of the DOM has laoded before any scripts run**
+
+* **One of the main difficulties with JavaScript testing is execution order. (i.e. what happens when). Utilize the following strategries to assist:**
+
+    1) console logging
+    
+            e.g. 
+                console.log('qunit tests start');
+                
+    2) Define an `initialize` function
+    > Rather than just relying on JavaScript to run `<script>` whenever, we can use a common pattern, which is to define an "initialize" function and call that when we want to in our tests(and later in real life)
+    
+            e.g.
+            
+                test.html
+                -----------
+                
+                <body>
+                  <div id="qunit"></div>
+                  <div id="qunit-fixture">
+                    <form>
+                      <input name="text" />
+                      <div class="has-error">Error text</div>
+                    </form>
+                  </div>
+                  
+                  
+                  
+                  <script src="../jquery-3.3.1.js"></script>
+                  <script src="../list.js"></script>
+                  <script src="qunit-2.9.1.js"></script>
+                  
+                  <script>
+                  
+                  console.log('qunit tests start');
+                  
+                  QUnit.test("errors should be hidden on keypress", function (assert) {
+                    console.log('in test 1');
+                    
+                    initialize();
+                    
+                    $('input[name="text"]').trigger('keypress');
+                    
+                    assert.equal($('.has-error').is(':visible'), false);
+                    
+                  });
+                  
+            
+                list.js
+                ---------
+                
+                var initialize = function () {
+                  console.log('initialize called');
+                  
+                  $('input[name="text"]').on('keypress', function() {
+                    console.log('in keypress handler');
+                    
+                    $('.has-error').hide();
+                  });
+                };
+                
+    
+
+* **`$` is the jQuery Swiss Army knife. It's used to find bits of the DOM. It's first argument is a CSS slector; In the example below, we're telling it to find all elements that have the class `has-error`. It reutrns an boject that represnts one or more DOM elements.**
+
+> The `is` method tells us whether an element matches a particular CSS property. Below we use :visible to check whether the elemnt is displayed or hidden
+
+ > The `.hide` method is used to hide the div. Behind the scenes, it dynamically sets a style="display: none" on the element
+
+            eg. 
+                
+                  <form>
+                    <input name="text" />
+                    <div class="has-error">Error text</div>
+                  </form>
+                  
+                  <script src="../jquery-3.3.1.js"></script>
+                  <script src="qunit-2.9.1.js"></script>
+                  
+                  <script>
+                  
+                  QUnit.test("smoke test", function (assert) {
+                    assert.equal($('.has-error').is(':visible'), true);
+                    $('.has-error').hide();
+                    assert.equal($('.has-error').is(':visible'), false);
+                  });
+                  
+                  </script>
+                  
+* **The jquery `.trigger` method is mainly used for testing. It says "fire off a Javascript DOM event on the element(s)". Below we use the keypress event, which is fired off by the browser behind the scenes whenever a user types something into a particular input element**
+
+            e.g.
+            
+                $('input[name="text"]').trigger('keypress');
+              
+* **How to find input elements with JQuery**
+> Below we create a form which has an input field with a name called `text`. Using the `$()`, we're able to select the value held in this element. 
+
+            e.g.
+                
+                    <form>
+                      <input name="text" />
+                      <div class="has-error">Error text</div>
+                    </form>
+                    
+                    $('input[name="text"]')
+# QUnit Facts
+-------------
+
+* **In order to have isolation between tests, you must wrap your fixtures within a `"qunit-fixture" div`**
+
+            e.g
+            
+                  <div id="qunit-fixture">
+                    <form>
+                      <input name="text" />
+                      <div class="has-error">Error text</div>
+                    </form>
+                  </div>
+        
 
 # TDD Facts
 -----------
+
+* **A `fixture` in testing is a way to tidy up between tests. It's code that run each time before a test runs**
 
 * **For POST requests, make sure you test both the valid case and the invalid case**
 
