@@ -642,24 +642,27 @@ through the main table in order to access the linked tables.  i.e `main_table.(n
 
 # Selenium Facts
 ----------------
-* Create your own wait_for helper function. This is used for Selenium tests that require a refresh or a loadig of a feature. 
 
-    e.g.     
-        def wait_for(self, fn):
-            start_time - time.time()
+* **`is_displayed` teslls you wethere an elemnt is visible or not. You can't just rely on checking whether the element is present in the DOM, because you can hide elements in the**
+
+* **Create your own wait_for helper function. This is used for Selenium tests that require a refresh or a loadig of a feature.**
+> When using Selenium, if the page needs to refresh, you must put an explicit wait to ensure whatever item you're waiting for has loaded. Whenever you submit a form with
+Keys.ENTER or click something thatis going to cause a page to load, you probably wnat an explicit wati fro your next assertion
+
+            e.g.     
             
-            while True:
-                try:
-                    return fn()
-                except (AssertionError, WebDriverException) as e:
-                    if time.time() - start_time > MAX_WAIT:
-                        raise e
-                    time.sleep(0.5) 
+                def wait_for(self, fn):
+                    start_time - time.time()
                     
-* When using Selenium, if the page needs to refresh, you must put an explicit wait to ensure whatever item you're waiting for has loaded. Whenever you submit a form with
-  Keys.ENTER or click something thatis going to cause a page to load, you probably wnat an explicit wati fro your next assertion
+                    while True:
+                        try:
+                            return fn()
+                        except (AssertionError, WebDriverException) as e:
+                            if time.time() - start_time > MAX_WAIT:
+                                raise e
+                            time.sleep(0.5) 
 
-* Selenium can locate items via the following methods
+* **Selenium can locate items via the following methods**
 
     1. find_element_by_id
     2. find_element_by_name
