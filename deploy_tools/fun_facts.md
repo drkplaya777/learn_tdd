@@ -35,6 +35,21 @@
 # Javascript/JQuery Facts
 -------------------------
 
+* **The TDD cycle with Javascript**
+
+    1) Write a Functional Test and see it fail
+    
+    2) Figure out what kind of code you need next: Python or JavaScript?
+    
+    3) Write a unit test in either langauage and see it fail
+    
+    4) Write some code in either language and make the test pass
+    
+    5) Rinse and repeat
+    
+
+* **Utilize the `jQuery.ready()` method to ensure that your initialize boilerplate code is loaded once the DOM(Document Object Model) is available. You shouldn't rely on the `<script>` tags to load the JavaScript for you**
+
 * **It's good practice to put yor script loads at the end of your body HTML, as it means the user doesn't have to wait for all your JavaSciprt to load before they can see something on the page. It also helps to make sure most of the DOM has laoded before any scripts run**
 
 * **One of the main difficulties with JavaScript testing is execution order. (i.e. what happens when). Utilize the following strategries to assist:**
