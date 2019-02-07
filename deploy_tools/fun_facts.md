@@ -246,7 +246,73 @@ when doing a unit test
         
         
 # Django Facts
+<<<<<<< Updated upstream
 ----------------
+=======
+---------------
+
+* **Authentication**
+> Authenicate() vs login()
+>> The `authenticate` method takes a username an password, unless they've been overriden by a custom user model to provide different crendental types, is queries each _authentication backend_ to see if the credentials are valid. If they are, a new User object, whether it be a custom user or the default User object, is returned. 
+
+>>> The `login` method simply takes the `User` object returned via the `authenticate` method and stores it in the Django session. 
+
+>>> These two methods work together in order to provide authentication and authorization within the Django Framework
+
+> How to login a user
+>> To log a user in, from a view, use `login()`. It takes an HttpRequest object and a User object. `login()` saves the user’s ID in the session, using Django’s session framework. Use `authenticate()` to verify a set of credentials. It takes credentials as keyword arguments, username and password for the default case, checks them against each authentication backend, and returns a User object if the credentials are valid for a backend. If the credentials aren’t valid for any backend or if a backend raises PermissionDenied, it returns None. For example:
+
+            e.g.
+                from django.contrib.auth import authenticate, login
+
+                def my_view(request):
+                    username = request.POST['username']
+                    password = request.POST['password']
+                    user = authenticate(request, username=username, password=password)
+                    if user is not None:
+                        login(request, user)
+                        # Redirect to a success page.
+                        ...
+                    else:
+                        # Return an 'invalid login' error message.
+                        ...
+                        
+* **How to test Django is sending an email**
+> Django is VERY magical. I would _SWEAR_ it's supposed to be in Ascender....When sending emails from Django, you can use the `mail` object to retrieve access to emails that Django is attempting to send. This `mail` object has an `outbox` attribute. This attribute gives access to any emails the Django server tries to send. 
+
+            e.g
+                from django.core import mail
+                
+                email = mail.outbox[0]
+
+* **How to send emails within Django**
+> You will need to update your projects settings.py to include the host information. Within the module that will be sendng the email, you use the `send_mail fuction` from the core django mail package
+
+            e.g. 
+                Settings.py
+                
+                    EMAIL_HOST = 'smtp.gmail.com'
+                    EMAIL_HOST_USER = 'walkej19@gmail.com'
+                    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
+                    EMAIL_PORT = 587
+                    EMAIL_USE_TLS = True
+                    
+                Views.py
+                
+                    url = request.build_absolute_uri(f'/accounts/login?uid={uid}')
+                    
+                    send_mail(
+                        'Your login link for Superlists',
+                        f'Use this link to log in:\n\n{url}',
+                        'noreply@superlists',
+                        [email]
+                    )
+
+* **Django project vs Django App**
+> A Django project contains a collection of Django Apps. The Django Apps are web applications. The Django project allows setting of global settings and managing said web applications. Or in Django's words:
+    
+>>_What’s the difference between a project and an app? An app is a Web application that does something – e.g., a Weblog system, a database of public records or a simple poll app. A project is a collection of configuration and apps for a particular website. A project can contain multiple apps. An app can be in multiple projects._
+>>>>>>> Stashed changes
 
 * **You can use the Django test case to test for which template was used in a view**
 
