@@ -174,6 +174,8 @@
 # TDD Facts
 -----------
 
+* **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's import to name your test verbosely. Your tests express what your requriements are of a particular class or function**
+
 * **A `fixture` in testing is a way to tidy up between tests. It's code that run each time before a test runs**
 
 * **For POST requests, make sure you test both the valid case and the invalid case**
@@ -246,10 +248,48 @@ when doing a unit test
         
         
 # Django Facts
-<<<<<<< Updated upstream
-----------------
-=======
----------------
+--------------
+
+* **Django Quirk: When creating a model, if no primary key is specified, Django will _implicity_ create one. In order words, if you don't specify a primary key for a model, Django will create one for you named `id`.**
+
+* **User object**
+> Django utilizes a `User` object for representing users who are logging into your application. These `User` objects is what the Django system wraps itself around to perform user authentication. When you're starting a new project, it's recommended to create your own custom `User` model. This will allow you to set which information you would like stored from the user by overriding the defaults. You need to update your projects `settings.py` and provide a `AUTH_USER_MODEL` variable in order to have this custom `User` model enabled within Django
+
+                e.g.
+                    INSTALLED_APPS = [
+                    #'django.contrib.admin',
+                    'django.contrib.auth',
+                    'django.contrib.contenttypes',
+                    'django.contrib.sessions',
+                    'django.contrib.messages',
+                    'django.contrib.staticfiles',
+                    'lists',
+                    'accounts',
+                ]
+
+                AUTH_USER_MODEL = 'accounts.User'
+
+>> Also, in order to create a new `User` object, you *_MUST_* create a model within your application `models.py`. The name of this `User` object needs to match the `AUTH_USER_MODEL` in the project `settings.py`. Also, keep in mind that once you create a new `User` in `<app>.models.py`, you will need to perform a `makemigrations` to have those changes applied to the database. 
+
+>> Your custom `User` model has some required class level attributes:
+
+    1) `REQUIRED_FIELDS` (list) - A list of the field names that will be prompted for when creating a user via the createsuperuser management command. The user will be prompted to supply a value for each of these fields. It must include any field for which blank is False or undefined and may include additional fields you want prompted for when a user is created interactively.
+    
+    2) `USERNAME_FIELD` (str) - A string describing the name of the field on the user model that is used as the unique identifier. This will usually be a username of some kind, but it can also be an email address, or any other unique identifier. The field must be unique (i.e., have unique=True set in its definition), unless you use a custom authentication backend that can support non-unique usernames.
+    
+    3) `is_anonymous` (boolean) - Read-only attribute which is always False. This is a way of differentiating User and AnonymousUser objects. Generally, you should prefer using is_authenticated to this attribute.
+    
+    4) `is_authenticated` (boolean) - Read-only attribute which is always True (as opposed to AnonymousUser.is_authenticated which is always False). This is a way to tell if the user has been authenticated. This does not imply any permissions and doesn’t check if the user is active or has a valid session. Even though normally you will check this attribute on request.user to find out whether it has been populated by the AuthenticationMiddleware (representing the currently logged-in user), you should know this attribute is True for any User instance.
+    
+>> The easiest way to construct a compliant custom user model is to inherit from `AbstractBaseUser`. AbstractBaseUser provides the core implementation of a user model, including hashed passwords and tokenized password resets. You must then provide some key implementation details
+
+                
+
+>> The `User` object can be used to set permissions and authorization for a given user interacting with your system. 
+
+>> On top of `User` objects, you have a `UserManager` object. This object performs administration for `User` objects such as creating a new `User object` user credentials or for creating `superusers`. When you create your own customer `User` object, please be sure to create a corresponding `UserManager`. 
+
+>> If you reference `User` directly (for example, by referring to it in a foreign key), your code will not work in projects where the `AUTH_USER_MODEL` setting has been changed to a different user mode
 
 * **Authentication**
 > Authenicate() vs login()
