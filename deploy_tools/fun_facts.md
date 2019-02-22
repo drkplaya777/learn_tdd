@@ -174,6 +174,8 @@
 # TDD Facts
 -----------
 
+* **We usually say it's better to test behaviour, not implemetation details; test what happens, not how you do it.**
+
 * **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's import to name your test verbosely. Your tests express what your requriements are of a particular class or function**
 
 * **A `fixture` in testing is a way to tidy up between tests. It's code that run each time before a test runs**
@@ -187,7 +189,7 @@
 * **Write tests for exploration of tools**
 
 * **Don't forget to write the *MINIMAL* amount of code required to get a test to pass** 
-> The code will be refactored after the testing is working. 
+> The code will be refactored after the test is working. 
 
 * **Place your unit tests in a tests directory. Include an __init__.py.**
 > This ensures that test runners can import the tests via a package. Your functional tests have no 
@@ -249,6 +251,46 @@ when doing a unit test
         
 # Django Facts
 --------------
+
+* **Using Messaging in Views**
+> Django has this notion of `Messages`. What these Messages do is allow the backend server to pass one time messages to the front end. Some people refer to these as `flash messages`. These flash messages essentially are logger statements. The messages can be set at different levels such as `INFO, SUCCESS, DEBUG, ERROR` to name a few. You would use the `context` object that Django provides it's testing client to check which messages are sent from the view to the backend. This `context` object contains a list of the messages. You iterate over this list to determine which Messages and level(tag) the message was sent as. 
+
+>> The messages framework allows you to temporarily store messages in one request and retrieve them for display in a subsequent request (usually the next one). Every message is tagged with a specific level that determines its priority (e.g., info, warning, or error).
+
+
+				e.g.
+					View
+						def send_login_email(request):
+							email = request.POST['email']
+							send_mail(
+								'Your login link for Superlists',
+								'bodytxt tbd',
+								'noreply@superlists',
+								[email]
+							)
+							
+							messages.success(
+								request,
+								"Check your email, we've sent you a link you can use to log in."
+							)
+							
+							return redirect('/')
+							
+					Template
+						{% if messages %}
+						<div class="row">
+							<div class="col-md-8">
+								{% for message in messages %}
+									{% if message.level_tag == 'success' %}
+										<div class="alert alert-success">{{ message }}</div>
+									{% else %}
+										<div class="alert alert-warning">{{ message }}</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+
 
 * **Django Quirk: When creating a model, if no primary key is specified, Django will _implicity_ create one. In order words, if you don't specify a primary key for a model, Django will create one for you named `id`.**
 
@@ -326,7 +368,7 @@ when doing a unit test
                 email = mail.outbox[0]
 
 * **How to send emails within Django**
-> You will need to update your projects settings.py to include the host information. Within the module that will be sendng the email, you use the `send_mail fuction` from the core django mail package
+> You will need to update your projects `settings.py` to include the host information. Within the module that will be sendng the email, you use the `send_mail fuction` from the core django mail package
 
             e.g. 
                 Settings.py
@@ -338,7 +380,7 @@ when doing a unit test
                     EMAIL_USE_TLS = True
                     
                 Views.py
-                
+                	email = request.POST['email']
                     url = request.build_absolute_uri(f'/accounts/login?uid={uid}')
                     
                     send_mail(
