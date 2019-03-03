@@ -114,6 +114,20 @@
 # Django Commands
 -----------------
 
+* **How to build a URI(URL) in a view**
+> You should use the `build_absolute_uri` function. 
+
+		Views.py
+			email = request.POST['email']
+			url = request.build_absolute_uri(f'/accounts/login?uid={uid}')
+			
+* **How to get the User model being used for Authentication**
+>> _This presumes you have a AUTH_USER_MODEL within your `settings.py`_
+
+		from django.contrib.auth import get_user_model
+		
+		User = get_user_model()
+
 
 * **Collect all static files in Django**
 

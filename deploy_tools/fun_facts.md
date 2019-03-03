@@ -18,7 +18,7 @@
 * **DRY is your friend!**
 
     - Don't Repeat Yourself
-    - Coding words to leave by!
+    - Coding words to live by!
     
     
 # Web development Facts
@@ -174,9 +174,20 @@
 # TDD Facts
 -----------
 
+* **When writing code to a test, pass the broken condition to ensure the test validates said test**
+
+* **Mocks - When to use**
+> You should use mocks in two cases:
+
+1) To isolate yourself from external side effects
+
+2) When needing to save yourself from duplication
+
+* **Each time you add an additional `if` or `try/except`, that's an additional test.**
+
 * **We usually say it's better to test behaviour, not implemetation details; test what happens, not how you do it.**
 
-* **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's import to name your test verbosely. Your tests express what your requriements are of a particular class or function**
+* **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's important to name your test verbosely. Your tests express what your requriements are of a particular class or function**
 
 * **A `fixture` in testing is a way to tidy up between tests. It's code that run each time before a test runs**
 
@@ -219,7 +230,7 @@ when doing a unit test
     
 * **Three Strikes and Refactor**
 > Copy and paste code once but on the third time, it's time to refactor. If you wait until you have three use cases, each might be slightly different, providing a 
-    better view fo what the common functionality is. If you refactor too early, you may find that the third use case doesnt quite fit your refactored code.
+    better view of what the common functionality is. If you refactor too early, you may find that the third use case doesnt quite fit your refactored code.
     
 * **Development-Driven Tests**
 > When you're exploring an Api, there is no need to stick to TDD. You can create unitTests if you like, but this isn't mandatory. Once you've completed exploration of the Api and need to integrate the Api, get back to the testing goat. BAAAAAAAH!
@@ -229,6 +240,19 @@ when doing a unit test
 
 # Python Facts
 --------------
+
+* Don't rely on the mock.assert methods. If you happen to fat finger the method name, by nature, the mock will create an attribue with the name you just fat finger.
+
+			e.g.
+				m = Mock()
+				m('love it')
+				
+				m.assertt_called_with('fuck it') 	<-- will create assertt_called_with('fuck it') on the mock. 
+				
+				Insted
+				
+				self.assertEqual(m.call_args, call('fuck it')
+				
 * Can use assertRaises with a context manager. If only the exception argument is given, returns a context manager so that the code under test can be written inline rather 
 * than as a function
 
@@ -251,6 +275,31 @@ when doing a unit test
         
 # Django Facts
 --------------
+
+* **Capturing GET request parameters**
+> When you're passing a parameter in via a URL i.e. `http://testserver.com/login?token=12345`, the `?` denoted parameters being passed, you can use the `request.GET.get` operation to retrieve the parameter. The `.GET` attribute on the `request` object is a Django Query set object. This object is basically a dictionary that exposes a `.get` interface same as a `dict` object will do. 
+
+				e.g.
+					def login(request):
+						auth.authenticate(uid=request.GET.get('token'))
+						
+						return redirect('/')
+						
+> When you're attempting to be RestFul and passing the information directly in the URL, you _must_ use a regex in the `urls.py` that captures the value from the URL and passes it as an argument to the view function along with the HttpRequest
+
+				e.g.
+					urls.py
+						from django.conf.urls import url
+						from lists import views
+
+						urlpatterns = [
+							url(r'^(\d+)/$', views.view_list, name='view_list'),
+						]
+						
+					views.py
+					def view_list(request, list_id):
+						list_ = List.objects.get(id=list_id)
+						form = ExistingListItemForm(for_list=list_)
 
 * **Using Messaging in Views**
 > Django has this notion of `Messages`. What these Messages do is allow the backend server to pass one time messages to the front end. Some people refer to these as `flash messages`. These flash messages essentially are logger statements. The messages can be set at different levels such as `INFO, SUCCESS, DEBUG, ERROR` to name a few. You would use the `context` object that Django provides it's testing client to check which messages are sent from the view to the backend. This `context` object contains a list of the messages. You iterate over this list to determine which Messages and level(tag) the message was sent as. 
@@ -335,14 +384,52 @@ when doing a unit test
 
 * **Authentication**
 > Authenicate() vs login()
->> The `authenticate` method takes a username an password, unless they've been overriden by a custom user model to provide different crendental types, is queries each _authentication backend_ to see if the credentials are valid. If they are, a new User object, whether it be a custom user or the default User object, is returned. 
+>> The `authenticate` method takes a username and password, unless they've been overriden by a custom user model to provide different crendental types. This queries each _authentication backend_ to see if the credentials are valid. If they are, a new User object, whether it be a custom user or the default User object, is returned. 
 
 >>> The `login` method simply takes the `User` object returned via the `authenticate` method and stores it in the Django session. 
 
 >>> These two methods work together in order to provide authentication and authorization within the Django Framework
 
+> When Creating Custom Authentiation 
+>> When you're using a custom `User` object, you will need a custom `authentication backend`. This backend will be used by Django to process users authenticationing against your application. In order to create a custom `authentication backend`, your class *MUST* have the following methods:
+
+	1) authenticate()
+	
+	2) get_user()
+	
+>> The authenciate method is expecting a unique identifer to be provided that allows retrieving the corresponding `User` object. The `get_user` method is responsible for returning a `User` that matches the unique identifier. Just as with the custom `User` objects, the custom `authentication backend` must be registered within the projects `settings.py`
+
+			e.g.
+				from accounts.models import User, Token
+
+				class PasswordlessAuthenticationBackend(object):
+
+					def authenticate(self, uid):
+						try:
+							token = Token.objects.get(uid=uid)
+						
+							return User.objects.get(email=token.email)
+						except Token.DoesNotExist:
+							return None
+						except User.DoesNotExist:
+							return User.objects.create(email=token.email)
+						
+					def get_user(self, email):
+						try:
+							return User.objects.get(email=email)
+						except User.DoesNotExist:
+							return None
+							
+				Settings.py:
+				
+					AUTHENTICATION_BACKEND = [
+						'accounts.authentication.PasswordlessAuthenticationBackend`,
+					]
+
 > How to login a user
->> To log a user in, from a view, use `login()`. It takes an HttpRequest object and a User object. `login()` saves the user’s ID in the session, using Django’s session framework. Use `authenticate()` to verify a set of credentials. It takes credentials as keyword arguments, username and password for the default case, checks them against each authentication backend, and returns a User object if the credentials are valid for a backend. If the credentials aren’t valid for any backend or if a backend raises PermissionDenied, it returns None. For example:
+>> To log a user in, from a view, use `login()`. It takes a HttpRequest object and an User object. `login()` saves the user’s ID in the session, using Django’s session framework. 
+
+>> Use `authenticate()` to verify a set of credentials. It takes credentials as keyword arguments, username and password for the default case, checks them against each authentication backend, and returns a User object if the credentials are valid for a backend. If the credentials aren’t valid for any backend or if a backend raises PermissionDenied, it returns None. For example:
 
             e.g.
                 from django.contrib.auth import authenticate, login
@@ -369,6 +456,8 @@ when doing a unit test
 
 * **How to send emails within Django**
 > You will need to update your projects `settings.py` to include the host information. Within the module that will be sendng the email, you use the `send_mail fuction` from the core django mail package
+
+>> Notice the use of `request.build_absolute_uri`...This method constructs a Uri to the location being passed. In order words, this method builds a Uri against your server to the specfiied path. 
 
             e.g. 
                 Settings.py
