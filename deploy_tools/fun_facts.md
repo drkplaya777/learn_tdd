@@ -276,6 +276,31 @@ when doing a unit test
 # Django Facts
 --------------
 
+* **How to use Sessions**
+> A ession is a dictionary-like data structure, and the user ID is stored under the key given by `django.contrib.auth.SESSION_KEY`. 
+
+>> Django provides full support for anonymous sessions. The session framework lets you store and retrieve arbitrary data on a per-site-visitor basis. It stores data on the server side and abstracts the sending and receiving of cookies. Cookies contain a session ID – not the data itself (unless you’re using the cookie based backend).
+
+				e.g
+				>>> from django.contrib.sessions.models import Session
+
+					>>> session = Session.objects.get(
+				...     session_key="0ak044hdllyc70epkq6bgq6fofv86o6p"
+				... )
+				>>> print(session.get_decoded())
+				{'_auth_user_id': 'walkej19@gmail.com', '_auth_user_backend': 'accounts.authentication.PasswordlessAuthenticationBackend', '_auth_user_hash': ''}
+				
+* **How to precreate a session**
+				e.g.
+				
+				user = User.objects.create(email=email)
+						session = SessionStore()
+						session[SESSION_KEY] = user.pk
+						session[BACKEND_SESSION_KEY] = settngs.AUTHENTICATION_BACKENDS[0]
+						
+						session.save()
+
+
 * **Capturing GET request parameters**
 > When you're passing a parameter in via a URL i.e. `http://testserver.com/login?token=12345`, the `?` denoted parameters being passed, you can use the `request.GET.get` operation to retrieve the parameter. The `.GET` attribute on the `request` object is a Django Query set object. This object is basically a dictionary that exposes a `.get` interface same as a `dict` object will do. 
 
