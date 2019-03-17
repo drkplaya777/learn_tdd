@@ -174,6 +174,9 @@
 # TDD Facts
 -----------
 
+* **De-duplicate your functional tests, with caution**
+> Every single FT doesn't need to test every singel part of your application. In our case, we wanted to avoid going through the full login process for every FT that needs an authenticated user. So we used a test fixture to "cheat" and skip that part. You might find other thingds you want to skip in your FTs. A word of caution, however: functional tests are there to catch unpredictable interactions between different parts of your application. So be wary of pushing de-duplication to the extreme. 
+
 * **When writing code to a test, pass the broken condition to ensure the test validates said test**
 
 * **Mocks - When to use**

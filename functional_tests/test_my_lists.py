@@ -8,7 +8,7 @@ User = get_user_model()
 
 class MyListsTest(FunctionalTest):
 
-	def create_pre_authneticated_session(self, email):
+	def create_pre_authenticated_session(self, email):
 		user = User.objects.create(email=email)
 		session = SessionStore()
 		session[SESSION_KEY] = user.pk
@@ -33,7 +33,7 @@ class MyListsTest(FunctionalTest):
 	    self.wait_to_be_logged_out(email)
 	    
 	    # Karsa is a logged-inuser
-	    self.create_pre_authneticated_session(email)
+	    self.create_pre_authenticated_session(email)
 	    
 	    self.browser.get(self.live_server_url)
 	    

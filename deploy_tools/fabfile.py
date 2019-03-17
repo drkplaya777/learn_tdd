@@ -2,7 +2,7 @@ import random
 from fabric.contrib.files import append, exists
 from fabric.api import cd, env, local, run
 
-REPO_URL = 'git@bitbucket.org:jeremy_walker1988/python-tdd-book.git'
+REPO_URL = 'git@bitbucket.org:drkplaya777/tdd-book.git'
 
 def deploy():
     site_folder = f'/home/{env.user}/public_html/{env.host}'
