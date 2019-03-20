@@ -477,6 +477,7 @@ when doing a unit test
 * **How to test Django is sending an email**
 > Django is VERY magical. I would _SWEAR_ it's supposed to be in Ascender....When sending emails from Django, you can use the `mail` object to retrieve access to emails that Django is attempting to send. This `mail` object has an `outbox` attribute. This attribute gives access to any emails the Django server tries to send. 
 
+>> _Note_: You can ONLY use this with the Django LiveServerTestCase. If you're deploying to a server, you will need to configure some email server to send the email. 
             e.g
                 from django.core import mail
                 
