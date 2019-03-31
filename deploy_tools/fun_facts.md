@@ -174,6 +174,9 @@
 # TDD Facts
 -----------
 
+* **Fixtures should be able to run locally and remotely**
+> Essentially if you're using databases in your testing, you need to ensure that your test database can be created on your staging server and your local machine. One way to solve this is to use Fabric to run remote commands. One of those remote commands could be creating a test database and/or flushing said database between each test. 
+
 * **De-duplicate your functional tests, with caution**
 > Every single FT doesn't need to test every singel part of your application. In our case, we wanted to avoid going through the full login process for every FT that needs an authenticated user. So we used a test fixture to "cheat" and skip that part. You might find other thingds you want to skip in your FTs. A word of caution, however: functional tests are there to catch unpredictable interactions between different parts of your application. So be wary of pushing de-duplication to the extreme. 
 
