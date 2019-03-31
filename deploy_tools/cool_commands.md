@@ -114,6 +114,10 @@
 # Django Commands
 -----------------
 
+**How to reset the database**
+
+        python manage.py flush 
+
 * **How to build a URI(URL) in a view**
 > You should use the `build_absolute_uri` function. 
 
@@ -208,6 +212,29 @@ _**Commands to use in systemd to manage services**_
 # Fabric Commands
 -------------------------------
 
+* **How to run multiple context managers**
+> [http://docs.fabfile.org/en/1.14/api/core/context_managers.html#module-fabric.context_managers](Context managers)
+            with settings(host_string=f'wu@{host}'):
+                env_vars = _get_server_env_vars(host)
+                
+                with shell_env(**env_vars):
+                    session_key = run(f'{manage_dot_py} create_session {email}')
+                    
+                    return session_key.strip()
+
+
+* **How to set the user/host/port via environment variable**
+> [http://docs.fabfile.org/en/1.14/usage/env.html#host-string](Host String)
+        with settings(host_string=f'wu@{host}'):
+            run(f'{manage_dot_py} flush --noinput')
+
+* **How to set environment variables within a shell**
+    
+        env_vars = dict(env1=variable1, env2=variable2)
+
+        with shell_env(**env_vars):
+            session_key = run(f'{manage_dot_py} create_session {email}')
+
 * **How to run a shell command on a server**
 
         run(f'<command_to_run')
@@ -242,6 +269,13 @@ _**Commands to use in systemd to manage services**_
 * **How to silence yes/no interactive with run command**
 
         run('<command>, --noinput')
+        
+* **How to override environment variables**
+
+        from fabric.context_managers import settings
+
+            with settings(host_string=f'wu@{host}'):
+                run(f'{manage_dot_py} flush --noinput')
     
     
 # Git Commands

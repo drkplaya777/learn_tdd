@@ -279,6 +279,49 @@ when doing a unit test
 # Django Facts
 --------------
 
+* **How to create your own Django management command**
+> Django allows you to create your own management commands. i.e. pythn manage.py _new manangement command_. This allows you to right a self contained script that takes in command line arguments. Django will then properly parse those arguments, allowing you to use them in whatever calling class/function/callable you would like. When trying to build a standalone scripts that works with Django (i.e. can talk to the database and so on), there are some fiddly bits that need to be _just_ right for Django to work with them: `DJANGO_SETTINGS_MODULE` environment variable and getting the `sys.path` correct. This is all taken care of for you if you follow the procedure below:
+
+    1) Ceate a folder named `management/commands/`
+    
+    2) Create a module within `management/commands/` that will be the name of your command
+        - i.e. management/commands/<new_command.py>
+    
+    3) Create a class that inherits from `django.core.management.BaseCommand`
+        - Overriding the add_arguments method and handle method.
+        
+    4) Register the new command module within your `INSTALLED_APPS` within your `project.settings.py`
+    
+                e.g
+                    from django.conf import settings
+                    from django.contrib.auth import BACKEND_SESSION_KEY, SESSION_KEY, get_user_model
+                    from django.contrib.sessions.backends.db import SessionStore
+                    from django.core.management.base import BaseCommand
+
+
+                    User = get_user_model()
+
+
+                    class Command(BaseCommand):
+                        
+                        def add_arguments(self, parser):
+                            parser.add_argument('email')
+                            
+                        def handle(self, *args, **options):
+                            session_key = create_pre_authenticated_session(options['email'])
+                            
+                            self.stdout.write(session_key)
+                            
+                    def create_pre_authenticated_session(email):
+                        user = User.objects.create(email=email)
+                        session = SessionStore()
+                        session[SESSION_KEY] = user.pk
+                        session[BACKEND_SESSION_KEY] = settings.AUTHENTICATION_BACKENDS[0]
+                        
+                        session.save()
+                        
+                        return session.session_key
+
 * **How to use Sessions**
 > A ession is a dictionary-like data structure, and the user ID is stored under the key given by `django.contrib.auth.SESSION_KEY`. 
 
@@ -294,6 +337,7 @@ when doing a unit test
 				{'_auth_user_id': 'walkej19@gmail.com', '_auth_user_backend': 'accounts.authentication.PasswordlessAuthenticationBackend', '_auth_user_hash': ''}
 				
 * **How to precreate a session**
+>> In order to precreate a session, you must use the `SessionStore` object. This object is what Django uses to store Sessions. When you interact with the `SessionStore` and call `SessionStore.save()`, Django is storng a session in the session database. This database is automatically created when testing with the Djanog test client, however, in production, you will need to determine how to use a proper database to store said precreated session properly. 
 				e.g.
 				
 				user = User.objects.create(email=email)
