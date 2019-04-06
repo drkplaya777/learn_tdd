@@ -7,6 +7,9 @@ from lists.forms import ItemForm, ExistingListItemForm
 
 def home_page(request):
     return render(request, 'home.html', {'form': ItemForm() })
+    
+def my_lists(request, email):
+    return render(request, 'my_lists.html')
 
 
 def view_list(request, list_id):
