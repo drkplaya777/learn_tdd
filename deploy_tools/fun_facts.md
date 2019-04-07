@@ -183,6 +183,8 @@
     - Followed by view functions
     
     - Finally down to the model
+    
+>> _Note_: Outside-In isn't a silver bullet. It encourages you to focus on things that are immediately visable to the user, but it won't automatcally remind you to write other critical tests that are less user-visble, i.e. security. You'll need to remember to write those items yourself. 
 
 * **Fixtures should be able to run locally and remotely**
 > Essentially if you're using databases in your testing, you need to ensure that your test database can be created on your staging server and your local machine. One way to solve this is to use Fabric to run remote commands. One of those remote commands could be creating a test database and/or flushing said database between each test. 
