@@ -63,11 +63,7 @@ class NewVisitorTest(FunctionalTest):
         # Dancer starts a new to-do list
         self.browser.get(self.live_server_url)
         
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Buy blades oil')
-        inputbox.send_keys(Keys.ENTER)
-        
-        self.wait_for_row_in_list_table('1: Buy blades oil')
+        self.add_list_item('Buy blades oil')
         
         # He notices that his list has a unique URL
         dancer_list_url = self.browser.current_url
@@ -91,11 +87,7 @@ class NewVisitorTest(FunctionalTest):
         
         # Kellanved starts a new list by entering a new item. He is less interesting then
         # Dancer
-        inputbox = self.get_item_input_box()
-        inputbox.send_keys('Buy robes')
-        inputbox.send_keys(Keys.ENTER)
-        
-        self.wait_for_row_in_list_table('1: Buy robes')
+        self.add_list_item('Buy robes')
         
         # Kellanved gets his own unique URL
         kellanved_list_url = self.browser.current_url

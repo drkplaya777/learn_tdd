@@ -11,10 +11,7 @@ class ItemValidationTest(FunctionalTest):
         # Dancer starts a list and causes a validation error:
         self.browser.get(self.live_server_url)
         
-        self.get_item_input_box().send_keys('Banter too thick')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        
-        self.wait_for_row_in_list_table('1: Banter too thick')
+        self.add_list_item('Banter too thick')
         
         self.get_item_input_box().send_keys('Banter too thick')
         self.get_item_input_box().send_keys(Keys.ENTER)
@@ -35,10 +32,7 @@ class ItemValidationTest(FunctionalTest):
         # Dancer starts a list and causes a validation error:
         self.browser.get(self.live_server_url)
         
-        self.get_item_input_box().send_keys('Banter too thick')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        
-        self.wait_for_row_in_list_table('1: Banter too thick')
+        self.add_list_item('Banter too thick')
         
         self.get_item_input_box().send_keys('Banter too thick')
         self.get_item_input_box().send_keys(Keys.ENTER)
@@ -101,10 +95,7 @@ class ItemValidationTest(FunctionalTest):
         # Dancer goes to the home page and starts a new list
         self.browser.get(self.live_server_url)
         
-        self.get_item_input_box().send_keys('Buy wellies')
-        self.get_item_input_box().send_keys(Keys.ENTER)
-        
-        self.wait_for_row_in_list_table('1: Buy wellies')
+        self.add_list_item('Buy wellies')
         
         # He accidentally tries to enter a duplicate item
         self.get_item_input_box().send_keys('Buy wellies')
