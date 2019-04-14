@@ -34,7 +34,7 @@
                 
 * Use in-memory(unsaved) model objects in your tests wherever you can; it makes your tests faster. 
 
-    
+
 # Web development Facts
 -----------------------
 
@@ -197,6 +197,19 @@
 
 * When your test is getting ugly, it means whatever you're testing, is doing too much work. REFACTOR THAT HOE!
 
+* **Outside-In Test Driven Development vs Inside-Out Test Driven Development**
+> Building your system from the outside in means functional tests are created, followed by unitTests. The system is designed from the outside via the functional tests with the code built layer by layer. The key benefit with this method is your outer layers are defining what is required by the inner layers, thus allowing for only the necessary compontents to be developed. As opposed to Inside-Out, which would require the model to be developed first, followed by the views and finally the presentation layer. This results in beefy objects or god like objects as the requirements haven't been defined for the most inner level i.e. model, to use. 
+
+    ## _Outside-In TDD workflow_
+    
+    - Start with the most outward facing piece. i.e. presentation layer
+    
+    - Followed by view functions
+    
+    - Finally down to the model
+    
+>> _Note_: Outside-In isn't a silver bullet. It encourages you to focus on things that are immediately visable to the user, but it won't automatcally remind you to write other critical tests that are less user-visble, i.e. security. You'll need to remember to write those items yourself. 
+
 * **Fixtures should be able to run locally and remotely**
 > Essentially if you're using databases in your testing, you need to ensure that your test database can be created on your staging server and your local machine. One way to solve this is to use Fabric to run remote commands. One of those remote commands could be creating a test database and/or flushing said database between each test. 
 
@@ -319,6 +332,36 @@ when doing a unit test
 # Django Facts
 --------------
 
+* **Django believes in one `base.html` form that utilizes `blocks` to substitute in different portions of HTML.**
+
+        e.g.
+            base.html
+                <div class="row">
+                <div class="col-md-6 col-md-offset-3 jumbotron">
+                <div class="text-center">
+                  <h1>{% block header_text %}{% endblock %} </h1>
+                  {% block list_form %}
+                    <form method="POST" action="{% block form_action %}{% endblock %}">
+                      {{ form.text }}
+                      {% csrf_token %}
+                      {% if form.errors %}
+                    <div class="form-group has-error">
+                        <span class="help-block">{{ form.text.errors }}</span>
+                    </div>
+                      {% endif %}
+                    </form>
+                {% endblock %}
+                    </div>
+                  </div>
+                  </div>
+			          
+           List.html
+                {% extends 'base.html' %}
+
+                {% block header_text %}My Lists{% endblock %}
+
+                {% block list_form %}{% endblock %}
+
 * **How to create your own Django management command**
 > Django allows you to create your own management commands. i.e. pythn manage.py _new manangement command_. This allows you to right a self contained script that takes in command line arguments. Django will then properly parse those arguments, allowing you to use them in whatever calling class/function/callable you would like. When trying to build a standalone scripts that works with Django (i.e. can talk to the database and so on), there are some fiddly bits that need to be _just_ right for Django to work with them: `DJANGO_SETTINGS_MODULE` environment variable and getting the `sys.path` correct. This is all taken care of for you if you follow the procedure below:
 
@@ -363,7 +406,7 @@ when doing a unit test
                         return session.session_key
 
 * **How to use Sessions**
-> A ession is a dictionary-like data structure, and the user ID is stored under the key given by `django.contrib.auth.SESSION_KEY`. 
+> A session is a dictionary-like data structure, and the user ID is stored under the key given by `django.contrib.auth.SESSION_KEY`. 
 
 >> Django provides full support for anonymous sessions. The session framework lets you store and retrieve arbitrary data on a per-site-visitor basis. It stores data on the server side and abstracts the sending and receiving of cookies. Cookies contain a session ID – not the data itself (unless you’re using the cookie based backend).
 
@@ -557,6 +600,19 @@ when doing a unit test
                     else:
                         # Return an 'invalid login' error message.
                         ...
+
+> How to force a login with Django Test client
+        command:
+                force_login(user, backend=None)[source]¶
+
+>> If your site uses Django’s authentication system, you can use the force_login() method to simulate the effect of a user logging into the site. Use this method instead of login() when a test requires a user be logged in and the details of how a user logged in aren’t important.
+
+>> Unlike login(), this method skips the authentication and verification steps: inactive users (is_active=False) are permitted to login and the user’s credentials don’t need to be provided.
+
+>> The user will have its backend attribute set to the value of the backend argument (which should be a dotted Python path string), or to settings.AUTHENTICATION_BACKENDS[0] if a value isn’t provided. The authenticate() function called by login() normally annotates the user like this.
+
+>> This method is faster than `login()` since the expensive password hashing algorithms are bypassed. Also, you can speed up `login()` by using a weaker hasher while testing.
+
                         
 * **How to test Django is sending an email**
 > Django is VERY magical. I would _SWEAR_ it's supposed to be in Ascender....When sending emails from Django, you can use the `mail` object to retrieve access to emails that Django is attempting to send. This `mail` object has an `outbox` attribute. This attribute gives access to any emails the Django server tries to send. 
@@ -962,8 +1018,7 @@ ModelForm fields can be accessed directly along with their corresponding `errors
     To override the database table name, use the db_table parameter in class Meta.
     
 * **Access related Django model objects**
-> What is a `related` Django model? It's how Django represents foreign key relationships within the ORM. So if you have a `List` table and an `Item` table and the `Item` table contains a foreign key for the 
-`List` table, these tables would be considered `related` Django models. Django provides the ability to quickly gather all related tables to a table whose foreign key is in use on other tables. You have to go
+> What is a `related` Django model? It's how Django represents foreign key relationships within the ORM. So if you have a `List` table and an `Item` table and the `Item` table contains a foreign key for the `List` table, these tables would be considered `related` Django models. Django provides the ability to quickly gather all related tables. You have to go
 through the main table in order to access the linked tables.  i.e `main_table.(name_of_linked_table_lower_case)_set`
 
         e.g. 
@@ -984,7 +1039,7 @@ through the main table in order to access the linked tables.  i.e `main_table.(n
                 
             item.save()
             
-            How to access the List related Items
+        How to access the List related Items
             
             list_.item_set.all()
             
