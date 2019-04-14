@@ -1,16 +1,10 @@
 from django.test import TestCase
 from django.core.exceptions import ValidationError
 from django.contrib.auth import get_user_model
-<<<<<<< HEAD
 from lists.models import Item, List
 
 User = get_user_model()
-=======
 
-from lists.models import Item, List
->>>>>>> 393a024191b5857a33be684b788f1e409cc2356b
-
-User = get_user_model()
 
 class ListModelTest(TestCase):
 
@@ -19,7 +13,6 @@ class ListModelTest(TestCase):
         
         self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
         
-<<<<<<< HEAD
     def test_create_new_creates_list_and_first_item(self):
         List.create_new(first_item_text='new item text')
         new_item = Item.objects.first()
@@ -51,31 +44,15 @@ class ListModelTest(TestCase):
         
         self.assertEqual(returned, new_list)
     
-=======
-    def test_lists_can_have_owners(self):
-        user = User.objects.create(email='a@b.com')
-        list_ = List.objects.create(owner=user)
-        
-        self.assertIn(list_, user.list_set.all())
-        
-    def test_list_owner_is_optional(self):
-        List.objects.create()  # Should not raise
-        
->>>>>>> 393a024191b5857a33be684b788f1e409cc2356b
     def test_list_name_is_first_item_text(self):
         list_ = List.objects.create()
         
         Item.objects.create(list=list_, text='first item')
         Item.objects.create(list=list_, text='second item')
         
-<<<<<<< HEAD
-        self.assertEqual(list_.name , 'first item')
-                    
-=======
         self.assertEqual(list_.name, 'first item')
         
 
->>>>>>> 393a024191b5857a33be684b788f1e409cc2356b
 class ItemModelTest(TestCase):
     
     def test_default_text(self):
