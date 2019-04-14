@@ -11,7 +11,7 @@
 
 * **Database Layer Validation**
     
-    - Validation at the databse layer is the  ultimate guarantee of data integrity
+    - Validation at the database layer is the  ultimate guarantee of data integrity
     - It's also inflexible as you can't ever have inconsistent data
     - It's not designed for user-friendliness
     
@@ -20,6 +20,20 @@
     - Don't Repeat Yourself
     - Coding words to live by!
     
+* Keep your ORM code isolated behind "helper" methods.
+
+> Instead of using the ORM methods directly in your client, isolate them behind a common interface, whether it's a class, function, lambda, etc, it doesn't matter. By keeping the ORM code being a common interface, it allows for isolated tests, which increases loose coupling in an application. Descriptive helper method names, effect a clearer intent of the code which only enhances readability, aiding future development. 
+
+>> Instead of this:
+
+                session.query(Users).filter(active=True).all()
+                
+>> Do this:
+
+                Users.get_all_active_users()
+                
+* Use in-memory(unsaved) model objects in your tests wherever you can; it makes your tests faster. 
+
     
 # Web development Facts
 -----------------------
@@ -27,32 +41,32 @@
 * **When running a `POST` operation, return a redirect to a new page**
 
 * **Keep your `views` thin**
-> if you find youreself looking at complex views, and having to write a lot of tests for them, it's time to start thinking about moving that logic elsewhere. 
+> if you find yourself looking at complex views, and having to write a lot of tests for them, it's time to start thinking about moving that logic elsewhere. 
 
 * **ALWAYS include validation on server side as well as front side**
 > Should never trust the front end will provide ample validation. 
 
-# Javascript/JQuery Facts
+# JavaScript/J Query Facts
 -------------------------
 
-* **The TDD cycle with Javascript**
+* **The TDD cycle with JavaScript**
 
     1) Write a Functional Test and see it fail
     
     2) Figure out what kind of code you need next: Python or JavaScript?
     
-    3) Write a unit test in either langauage and see it fail
+    3) Write a unit test in either language and see it fail
     
     4) Write some code in either language and make the test pass
     
     5) Rinse and repeat
     
 
-* **Utilize the `jQuery.ready()` method to ensure that your initialize boilerplate code is loaded once the DOM(Document Object Model) is available. You shouldn't rely on the `<script>` tags to load the JavaScript for you**
+* **Utilize the `j Query.ready()` method to ensure that your initialize boilerplate code is loaded once the DOM(Document Object Model) is available. You shouldn't rely on the `<script>` tags to load the JavaScript for you**
 
-* **It's good practice to put yor script loads at the end of your body HTML, as it means the user doesn't have to wait for all your JavaSciprt to load before they can see something on the page. It also helps to make sure most of the DOM has laoded before any scripts run**
+* **It's good practice to put your script loads at the end of your body HTML, as it means the user doesn't have to wait for all your JavaScript to load before they can see something on the page. It also helps to make sure most of the DOM has loaded before any scripts run**
 
-* **One of the main difficulties with JavaScript testing is execution order. (i.e. what happens when). Utilize the following strategries to assist:**
+* **One of the main difficulties with JavaScript testing is execution order. (i.e. what happens when). Utilize the following strategies to assist:**
 
     1) console logging
     
@@ -86,12 +100,12 @@
                   
                   console.log('qunit tests start');
                   
-                  QUnit.test("errors should be hidden on keypress", function (assert) {
+                  Q Unit.test("errors should be hidden on key press", function (assert) {
                     console.log('in test 1');
                     
                     initialize();
                     
-                    $('input[name="text"]').trigger('keypress');
+                    $('input[name="text"]').trigger('key press');
                     
                     assert.equal($('.has-error').is(':visible'), false);
                     
@@ -104,8 +118,8 @@
                 var initialize = function () {
                   console.log('initialize called');
                   
-                  $('input[name="text"]').on('keypress', function() {
-                    console.log('in keypress handler');
+                  $('input[name="text"]').on('key press', function() {
+                    console.log('in key press handler');
                     
                     $('.has-error').hide();
                   });
@@ -113,9 +127,9 @@
                 
     
 
-* **`$` is the jQuery Swiss Army knife. It's used to find bits of the DOM. It's first argument is a CSS slector; In the example below, we're telling it to find all elements that have the class `has-error`. It reutrns an boject that represnts one or more DOM elements.**
+* **`$` is the j Query Swiss Army knife. It's used to find bits of the DOM. It's first argument is a CSS sector; In the example below, we're telling it to find all elements that have the class `has-error`. It returns an object that represents one or more DOM elements.**
 
-> The `is` method tells us whether an element matches a particular CSS property. Below we use :visible to check whether the elemnt is displayed or hidden
+> The `is` method tells us whether an element matches a particular CSS property. Below we use :visible to check whether the element is displayed or hidden
 
  > The `.hide` method is used to hide the div. Behind the scenes, it dynamically sets a style="display: none" on the element
 
@@ -131,7 +145,7 @@
                   
                   <script>
                   
-                  QUnit.test("smoke test", function (assert) {
+                  Q Unit.test("smoke test", function (assert) {
                     assert.equal($('.has-error').is(':visible'), true);
                     $('.has-error').hide();
                     assert.equal($('.has-error').is(':visible'), false);
@@ -139,13 +153,13 @@
                   
                   </script>
                   
-* **The jquery `.trigger` method is mainly used for testing. It says "fire off a Javascript DOM event on the element(s)". Below we use the keypress event, which is fired off by the browser behind the scenes whenever a user types something into a particular input element**
+* **The j query `.trigger` method is mainly used for testing. It says "fire off a JavaScript DOM event on the element(s)". Below we use the key press event, which is fired off by the browser behind the scenes whenever a user types something into a particular input element**
 
             e.g.
             
-                $('input[name="text"]').trigger('keypress');
+                $('input[name="text"]').trigger('key press');
               
-* **How to find input elements with JQuery**
+* **How to find input elements with J Query**
 > Below we create a form which has an input field with a name called `text`. Using the `$()`, we're able to select the value held in this element. 
 
             e.g.
@@ -156,10 +170,10 @@
                     </form>
                     
                     $('input[name="text"]')
-# QUnit Facts
+# Q Unit Facts
 -------------
 
-* **In order to have isolation between tests, you must wrap your fixtures within a `"qunit-fixture" div`**
+* **In order to have isolation between tests, you must wrap your fixtures within a `"knit-fixture" div`**
 
             e.g
             
@@ -173,12 +187,21 @@
 
 # TDD Facts
 -----------
+* Test Isolation
+> It might help you to drive out good design for individual layers, but it won't automatically verify the integration _between_ your layers. 
+
+> When doing Outside-In TD with siolated etests, you need to tkeep track of each test's imlicit assupmotions tabout the contract wich the next layer should implemtn, and remember to test each of those in turn later. A placeholer test with a `self.fail` should surfice
+
+* Integrated tests are tests that need all layers to function.
+> Another way of saying this, if your test code needs a database to run, you've written an integrated test. Integrated tests require other layers of your application such as a database or third party API to be functional in order to pass. 
+
+* When your test is getting ugly, it means whatever you're testing, is doing too much work. REFACTOR THAT HOE!
 
 * **Fixtures should be able to run locally and remotely**
 > Essentially if you're using databases in your testing, you need to ensure that your test database can be created on your staging server and your local machine. One way to solve this is to use Fabric to run remote commands. One of those remote commands could be creating a test database and/or flushing said database between each test. 
 
 * **De-duplicate your functional tests, with caution**
-> Every single FT doesn't need to test every singel part of your application. In our case, we wanted to avoid going through the full login process for every FT that needs an authenticated user. So we used a test fixture to "cheat" and skip that part. You might find other thingds you want to skip in your FTs. A word of caution, however: functional tests are there to catch unpredictable interactions between different parts of your application. So be wary of pushing de-duplication to the extreme. 
+> Every single FT doesn't need to test every single part of your application. In our case, we wanted to avoid going through the full login process for every FT that needs an authenticated user. So we used a test fixture to "cheat" and skip that part. You might find other things you want to skip in your FTs. A word of caution, however: functional tests are there to catch unpredictable interactions between different parts of your application. So be wary of pushing de-duplication to the extreme. 
 
 * **When writing code to a test, pass the broken condition to ensure the test validates said test**
 
@@ -191,9 +214,9 @@
 
 * **Each time you add an additional `if` or `try/except`, that's an additional test.**
 
-* **We usually say it's better to test behaviour, not implemetation details; test what happens, not how you do it.**
+* **We usually say it's better to test behavior, not implementation details; test what happens, not how you do it.**
 
-* **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's important to name your test verbosely. Your tests express what your requriements are of a particular class or function**
+* **A benefit of having tests is they allow you to remember why you wrote code a certain way. You may forget why some code works the way it does, looking at your tests could help jog your memory. That's why it's important to name your test verbosely. Your tests express what your requirements are of a particular class or function**
 
 * **A `fixture` in testing is a way to tidy up between tests. It's code that run each time before a test runs**
 
@@ -246,6 +269,20 @@ when doing a unit test
 
 # Python Facts
 --------------
+
+* You can construct a Mock with kwargs, with each kwarg corresponding to an attribute on the mock. 
+
+            e.g. 
+                m = Mock(is_authenticated=False)
+                
+                print(m.is_authenticated)
+                    False
+
+* When using the `side_effect` of a mock, remember 2 thing:
+
+    1) Set the `side_effect` *BEFORE* it's used
+    
+    2) ALWAYS check the `side_effect` was invoked. 
 
 * Don't rely on the mock.assert methods. If you happen to fat finger the method name, by nature, the mock will create an attribue with the name you just fat finger.
 
@@ -701,13 +738,15 @@ That will allow you in your view to pass the models to the `redirect` function. 
             
 * **ModelForms**
 > These bad boys are used to create a form(Django/HTML form) from a model. In other words, Django provides a special class which can autogenerate a form for a model. This modelForm subclass can 
-provide form level and model level validation. Just like normal form validation, model form validation is triggered implicitly when calling `is_valid()` or accessing the `errors` attribute and explicitly when calling `full_clean()`, although you will typically not use the latter method in practice.
+provide form level and model level validation. Just like normal form validation, model form validation is triggered implicitly when calling `is_valid()` or accessing the `errors` attribute and explicitly when calling `full_clean()`, although you will typically not use the latter method in practice. A form is `bound` when data has been given to the form for validation. 
 
-    > The primary task of a Form object is to validate data. With a bound Form instance, call the `is_valid()` method to run validation and return a boolean designating whether the data was valid. It also has a side effect of populating the `errors` attribute
+    > The primary task of a Form object is to validate data. With a bound Form instance, call the `is_valid()` method to run validation and return a boolean designating whether the data was valid. It also has a side effect of populating the `errors` attribute.
     
-    > **Django quirk: _update_errors() allows overriding the corresponding model validation error Override any validation error messages defined at the model level with those defined at the form level.**
     
-    > **Django quirk: The `ValidationError` has a `message_dict` attribute that you can override to pass custom errors back to the form**
+    
+    > Django quirk: _update_errors() allows overriding the corresponding model validation error Override any validation error messages defined at the model level with those defined at the form level.
+    
+    > Django quirk: The `ValidationError` has a `message_dict` attribute that you can override to pass custom errors back to the form
     
                 class ExistingListItemForm(ItemForm):
             
@@ -721,7 +760,7 @@ provide form level and model level validation. Just like normal form validation,
                         except ValidationError as e:
                             e.error_dict = {'text': [DUPLICATE_ITEM_ERROR]}
                             self._update_errors(e)
-    > **Django Quirk: When using a ModelForm, you specify the fields to include in the form. If the Model itself contains a unique constraint and one of those fields _ISN'T_ one of the fields within the ModelForm, the unique constraint will *NOT* be enforced at the form level but the model level. In order to overcome this, you must call the model the for ModelForm is referencing, `validate_unique` method directly. You can access the model the ModelForm is referencing via the instance attribute. You then can call `validate_unique` on the model directly. You then need to ensure to override the `vaidate_unique` method on the ModelForm to have this behavior invoked**
+    > Django Quirk: When using a ModelForm, you specify the fields to include in the form. If the Model itself contains a unique constraint and one of those fields _ISN'T_ one of the fields within the ModelForm, the unique constraint will *NOT* be enforced at the form level but the model level. In order to overcome this, you must call the model the for ModelForm is referencing, `validate_unique` method directly. You can access the model the ModelForm is referencing via the instance attribute. You then can call `validate_unique` on the model directly. You then need to ensure to override the `vaidate_unique` method on the ModelForm to have this behavior invoked
     
                 e.g. 
                     class ExistingListItemForm(forms.models.ModelForm):
@@ -790,7 +829,7 @@ provide form level and model level validation. Just like normal form validation,
                         text = models.TextField(default='')
                         list = models.ForeignKey(List, default=None)
             
-    - **The ModelForm `save()` method creates and saves a database object from the data bound to the form.**
+    - The ModelForm `save()` method creates and saves a database object from the data bound to the form.
         - Note that if the form hasn’t been validated, calling save() will do so by checking form.errors. A ValueError will be raised if the data in the form doesn’t validate – i.e., if form.errors evaluates to True.
 
     - **Model vs Form level validation**
@@ -818,8 +857,25 @@ provide form level and model level validation. Just like normal form validation,
                     
                     3. validate_unique()
                         - This method is similar to clean_fields(), but validates all uniqueness constraints on your model instead of individual field values.
-    
-* **How to render a ModelForm via a Django Template**
+                        
+* How to access the "cleaned" data from a Form
+> "Cleaned" data refers to input data that has been santiazed for consumption via the Form, in other words, normalizing it to a consistent format. This is a nice feature, because it allows data for a particular field to be input in a variety of ways, always resulting in consistent output.
+
+> For example, DateField normalizes input into a Python datetime.date object. Regardless of whether you pass it a string in the format '1994-07-15', a datetime.date object, or a number of other formats, DateField will always normalize it to a datetime.date object as long as it’s valid.
+
+> Once you’ve created a Form instance with a set of data and validated it, you can access the clean data via its cleaned_data attribute:
+
+                >>> data = {'subject': 'hello',
+                ...         'message': 'Hi there',
+                ...         'sender': 'foo@example.com',
+                ...         'cc_myself': True}
+                >>> f = ContactForm(data)
+                >>> f.is_valid()
+                True
+                >>> f.cleaned_data
+                {'cc_myself': True, 'message': 'Hi there', 'sender': 'foo@example.com', 'subject': 'hello'}
+
+* How to render a ModelForm via a Django Template
 
     1. Create your modelForm
     2. Pass an instance of the form to the render function as the context
@@ -1096,7 +1152,7 @@ through the main table in order to access the linked tables.  i.e `main_table.(n
 # Selenium Facts
 ----------------
 
-* **`is_displayed` teslls you wethere an elemnt is visible or not. You can't just rely on checking whether the element is present in the DOM, because you can hide elements in the**
+* **`is_displayed` teslls you wethere an element is visible or not. You can't just rely on checking whether the element is present in the DOM, because you can hide elements in the**
 
 * **Create your own wait_for helper function. This is used for Selenium tests that require a refresh or a loadig of a feature.**
 > When using Selenium, if the page needs to refresh, you must put an explicit wait to ensure whatever item you're waiting for has loaded. Whenever you submit a form with
