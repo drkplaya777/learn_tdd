@@ -34,6 +34,19 @@
                 
 * Use in-memory(unsaved) model objects in your tests wherever you can; it makes your tests faster. 
 
+* Continuous Integration
+
+> Automating the running of your functional tests during development, is `Continuous Integration`. As your functional tests take longer to run, the probability increases that functional tests won't be run. `Continuous Integration` is supposed to prevent said phenomenon from occurring via automation using a tool such as Jenkins. [Jenkins Docs](https://jenkins.io/doc/)
+
+> Running Functional Tests Headless
+>> "Headless" means functional tests that don't require a web browser. If you're developing a front facing application, chances are high that you will be creating functional tests to ensure the HTML/CSS/JavaScript are behaving properly. These will require a web browser. i.e. a head. There are headless browsers such as `PhantomJS` or `SlimerJS`. The issue with headless browsers are two fold:
+
+    1) They aren't not "real" web browsers. You can't be sure you're going to catch all the strange quirks and behaviors actual web browsers user
+    
+    2) They can behave quite differently with Selenium, in some instances requiring a refactor of functional tests to even run. 
+    
+>> There _IS_ an argument to be made for `headless` browsers as a "dev-only" tool to speed up running of FTs on the developers machine, while the tests on the CI server use actual browsers.
+
 
 # Web development Facts
 -----------------------
@@ -190,7 +203,7 @@
 * Test Isolation
 > It might help you to drive out good design for individual layers, but it won't automatically verify the integration _between_ your layers. 
 
-> When doing Outside-In TD with siolated etests, you need to tkeep track of each test's imlicit assupmotions tabout the contract wich the next layer should implemtn, and remember to test each of those in turn later. A placeholer test with a `self.fail` should surfice
+> When doing Outside-In TD with isolated tests, you need to keep track of each test's implicit assumptions about the contract wite the next layer should implement, and remember to test each of those in turn later. A placeholder test with a `self.fail` should suffice
 
 * Integrated tests are tests that need all layers to function.
 > Another way of saying this, if your test code needs a database to run, you've written an integrated test. Integrated tests require other layers of your application such as a database or third party API to be functional in order to pass. 
@@ -1207,9 +1220,13 @@ through the main table in order to access the linked tables.  i.e `main_table.(n
 # Selenium Facts
 ----------------
 
-* **`is_displayed` teslls you wethere an element is visible or not. You can't just rely on checking whether the element is present in the DOM, because you can hide elements in the**
+* You can take a screenshot of the current windows by using: `get_screenshot_as_file`
 
-* **Create your own wait_for helper function. This is used for Selenium tests that require a refresh or a loadig of a feature.**
+* You can dump the source of a page via: `.page_source` on a browser object
+
+* `is_displayed` tells you whether an element is visible or not. You can't just rely on checking whether the element is present in the DOM, because you can hide elements in the DOM
+
+* Create your own wait_for helper function. This is used for Selenium tests that require a refresh or a loadig of a feature.
 > When using Selenium, if the page needs to refresh, you must put an explicit wait to ensure whatever item you're waiting for has loaded. Whenever you submit a form with
 Keys.ENTER or click something thatis going to cause a page to load, you probably wnat an explicit wati fro your next assertion
 
@@ -1226,7 +1243,7 @@ Keys.ENTER or click something thatis going to cause a page to load, you probably
                                 raise e
                             time.sleep(0.5) 
 
-* **Selenium can locate items via the following methods**
+* Selenium can locate items via the following methods
 
     1. find_element_by_id
     2. find_element_by_name
