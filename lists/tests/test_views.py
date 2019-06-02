@@ -25,7 +25,7 @@ class ShareListViewUnitTest(unittest.TestCase):
     def setUp(self):
         self.request = HttpRequest()
         self.request.method = 'POST'
-        self.request.POST['email'] = 'k_orlong@house_of_chains.com'
+        self.request.POST['sharee'] = 'k_orlong@house_of_chains.com'
     
     def test_POST_redirects_to_lists_page(self, mock_redirect, mock_List):
     
@@ -43,7 +43,7 @@ class ShareListViewUnitTest(unittest.TestCase):
         
         share_list(self.request, list_id=1)
         
-        expected_args = call(self.request.POST['email'])
+        expected_args = call(self.request.POST['sharee'])
         
         self.assertEqual(expected_args, mock_list.share.call_args)
     

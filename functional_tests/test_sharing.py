@@ -52,8 +52,8 @@ class SharingTest(FunctionalTest):
 
         # On the list page, Kellanved can see that it's Dancer's list
         self.wait_for(lambda: self.assertEqual(
-            list_page.get_list_owner(),
-            'dancer@shadow.com'
+            'dancer@shadow.com',
+            list_page.get_list_owner()
         ))
         
         # He adds an item to the list

@@ -28,6 +28,7 @@ def view_list(request, list_id):
             form.save()
             
             return redirect(list_)
+            
     return render(request, 'list.html', {'list': list_, "form": form})
 
         
@@ -43,13 +44,13 @@ def new_list(request):
 
 def share_list(request, list_id):
     list_ = List.find_list(list_id)
-    sharee = User.find_sharee(request.POST['email'])
+    sharee = User.find_sharee(request.POST['sharee'])
     
     if not sharee:
         return redirect(list_)
  
     if list_:
-        list_.share(request.POST['email'])
+        list_.share(request.POST['sharee'])
     
         return redirect(list_)
     
