@@ -18,13 +18,22 @@ class UserModelTest(TestCase):
         self.assertEqual(user.pk, 'a@b.com')
         
     def test_no_problem_with_auth_login(self):
-    	user = User.objects.create(email='karsa@house_of_chains.com')
-    	user.backend=''
-    	
-    	request = self.client.request().wsgi_request
-    	
-    	auth.login(request, user)			# should no raise
-			
+        user = User.objects.create(email='karsa@house_of_chains.com')
+        user.backend=''
+        
+        request = self.client.request().wsgi_request
+        
+        auth.login(request, user)            # should no raise
+        
+    def test_find_sharee_returns_false_for_invalid_user(self):
+        self.assertFalse(User.find_sharee('invalid_user'))
+        
+    def test_find_sharee_returns_true_for_valid_user(self):
+        user = User.objects.create(email='karsa@house_of_chains.com')
+        
+        self.assertTrue(User.find_sharee(user.email))    
+        
+
 class TokenModelTest(TestCase):
 
     def test_links_user_with_auto_generated_uid(self):

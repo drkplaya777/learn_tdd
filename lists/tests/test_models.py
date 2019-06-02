@@ -13,6 +13,46 @@ class ListModelTest(TestCase):
         
         self.assertEqual(list_.get_absolute_url(), f'/lists/{list_.id}/')
         
+    def test_lists_shared_with_user_can_be_accessed_via_attribute(self):
+        user = User.objects.create(email='karsa@house_of_chains.com')
+        list_ = List.objects.create()
+        
+        list_.share(user.email)
+        
+        self.assertIn(list_, user.sharee.all())
+        
+    def test_find_list_returns_corresponding_list(self):
+        list_ = List.objects.create()
+        
+        found_list = List.find_list(list_.id)
+        
+        self.assertEqual(list_, found_list)
+        
+    def test_find_list_returns_none_for_missing_list(self):
+        found_list = List.find_list(1)
+        
+        self.assertFalse(found_list)
+        
+    def test_share_locates_user_and_shares_list(self):
+        list_ = List.objects.create()
+        user = User.objects.create(email='kellanved@shadow.com')
+        
+        list_.share(user.email)
+        
+        self.assertIn(user, list_.shared_with.all())
+        
+        
+    def test_shared_with_add_shares_list_with_user_via_email(self):
+        user = User.objects.create(email='dancer@shadow.com')
+        list_ = List.objects.create()
+        
+        list_.shared_with.add(user)
+        
+        list_users_shared_with = list_.shared_with.all()
+        
+        self.assertIn(user, list_users_shared_with)
+        
+        
     def test_create_new_creates_list_and_first_item(self):
         List.create_new(first_item_text='new item text')
         new_item = Item.objects.first()

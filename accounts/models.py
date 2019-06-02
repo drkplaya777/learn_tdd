@@ -13,6 +13,15 @@ class User(models.Model):
     is_anonymous = False
     is_authenticated = True
     
+    @classmethod
+    def find_sharee(cls, email):
+        try:
+            User.objects.get(email=email)
+        except User.DoesNotExist:
+            return False
+        else:
+            return True
+        
     
 class Token(models.Model):
     email = models.EmailField()

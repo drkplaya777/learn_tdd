@@ -1,4 +1,4 @@
-from unittest.mock import patch, Mock
+from unittest.mock import patch, Mock, call
 from unittest import skip
 import unittest
 
@@ -10,16 +10,75 @@ from django.utils.html import escape
 from django.contrib.auth import get_user_model
 
 from lists.views import home_page
-from lists.views import new_list
+from lists.views import new_list, share_list
 from lists.models import Item, List
 from lists.forms import (
     DUPLICATE_ITEM_ERROR, EMPTY_ITEM_ERROR,
     ExistingListItemForm, ItemForm)
 
-
 User = get_user_model()
 
+@patch('lists.views.List')
+@patch('lists.views.redirect')
+class ShareListViewUnitTest(unittest.TestCase):
 
+    def setUp(self):
+        self.request = HttpRequest()
+        self.request.method = 'POST'
+        self.request.POST['email'] = 'k_orlong@house_of_chains.com'
+    
+    def test_POST_redirects_to_lists_page(self, mock_redirect, mock_List):
+    
+        response = share_list(self.request, list_id=1)
+        
+        self.assertEqual(mock_redirect.return_value, response)
+        mock_redirect.assert_called_once_with(mock_List.find_list.return_value)
+    
+    @patch('lists.views.User')  
+    def test_post_email_provided_to_list_share_interface(
+        self, mock_User, mock_redirect, mock_List
+    ):
+        mock_list = mock_List.find_list.return_value
+        mock_sharee = mock_User.find_sharee.return_value = True
+        
+        share_list(self.request, list_id=1)
+        
+        expected_args = call(self.request.POST['email'])
+        
+        self.assertEqual(expected_args, mock_list.share.call_args)
+    
+    @patch('lists.views.render') 
+    @patch('lists.views.ItemForm')
+    @patch('lists.views.User')  
+    def test_invalid_list_renders_home_page_template(
+        self, mock_User, mock_Form, mock_render, mock_redirect, mock_List
+    ):
+        mock_List.find_list.return_value = None
+        
+        response = share_list(self.request, list_id=1)
+        
+        expected_args = call(self.request, 'home.html', {'form': mock_Form() })
+        
+        self.assertEqual(mock_render.return_value, response)
+        self.assertEqual(expected_args, mock_render.call_args)
+        
+    @patch('lists.views.render') 
+    @patch('lists.views.ItemForm')
+    @patch('lists.views.User')  
+    def test_invalid_sharee_renders_list_page_template(
+        self, mock_User, mock_Form, mock_render, mock_redirect, mock_List
+    ):
+        mock_list = mock_List.find_list.return_value
+        mock_User.find_sharee.return_value = None
+        
+        response = share_list(self.request, list_id=1)
+        
+        expected_args = call(mock_list)
+        
+        self.assertEqual(mock_redirect.return_value, response)
+        self.assertEqual(expected_args, mock_redirect.call_args)
+
+        
 @patch('lists.views.NewListForm')
 class NewListViewUnitTest(unittest.TestCase):
 
@@ -43,7 +102,7 @@ class NewListViewUnitTest(unittest.TestCase):
         mock_form.save.assert_called_once_with(owner=self.request.user)
         
     @patch('lists.views.redirect')
-    def test_redirects_to_form_returned_object_if_form_vaid(
+    def test_redirects_to_form_returned_object_if_form_valid(
         self, mock_redirect, mockNewListForm
     ):
         mock_form = mockNewListForm.return_value

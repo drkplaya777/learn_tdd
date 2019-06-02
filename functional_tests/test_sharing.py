@@ -12,7 +12,7 @@ def quit_if_possible(browser):
 
 class SharingTest(FunctionalTest):
 
-    def test_can_share_a_list_with_another_usr(self):
+    def test_can_share_a_list_with_another_user(self):
         # Dancer is a logged in user
         self.create_pre_authenticated_session('dancer@shadow.com')
         

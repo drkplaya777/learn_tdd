@@ -11,3 +11,12 @@
      {% endfor %}
     </table>
 {% endblock %}
+
+{% block extra_content %}
+    <span>Share this list </span>
+    <form method="POST" action="{% url 'share_list' list.id %}" >
+        <input class="form-control" name="sharee" type="text" placeholder="your-friend@example.com" />
+    {% csrf_token %}
+    </form>
+    
+{% endblock %}

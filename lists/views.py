@@ -39,3 +39,19 @@ def new_list(request):
         
         return redirect(list_)
     return render(request, 'home.html', {'form': form})
+    
+
+def share_list(request, list_id):
+    list_ = List.find_list(list_id)
+    sharee = User.find_sharee(request.POST['email'])
+    
+    if not sharee:
+        return redirect(list_)
+ 
+    if list_:
+        list_.share(request.POST['email'])
+    
+        return redirect(list_)
+    
+    return render(request, 'home.html', {'form': ItemForm() })
+

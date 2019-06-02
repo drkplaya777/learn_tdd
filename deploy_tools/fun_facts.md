@@ -1034,6 +1034,15 @@ ModelForm fields can be accessed directly along with their corresponding `errors
 > What is a `related` Django model? It's how Django represents foreign key relationships within the ORM. So if you have a `List` table and an `Item` table and the `Item` table contains a foreign key for the `List` table, these tables would be considered `related` Django models. Django provides the ability to quickly gather all related tables. You have to go
 through the main table in order to access the linked tables.  i.e `main_table.(name_of_linked_table_lower_case)_set`
 
+> If a model has a ForeignKey, instances of the foreign-key model will have access to a Manager that returns all instances of the first model. By default, this Manager is named FOO_set, where FOO is the source model name, lowercased. This Manager returns QuerySets, which can be filtered and manipulated as described in the “Retrieving objects” section above.
+
+>>> b = Blog.objects.get(id=1)
+>>> b.entry_set.all() # Returns all Entry objects related to Blog.
+
+# b.entry_set is a Manager that returns QuerySets.
+>>> b.entry_set.filter(headline__contains='Lennon')
+>>> b.entry_set.count()
+
         e.g. 
             
             class List(models.Model):
