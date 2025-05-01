@@ -16,7 +16,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'walkej19@gmail.com'
+EMAIL_HOST_USER = ''
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_PASSWORD')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -25,7 +25,7 @@ EMAIL_USE_TLS = True
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'e1la^pd&f4i$tghsw&1&7sf6s++vjd-+ro&a7u*soe6yav)!e+'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if 'DJANGO_DEBUG_FALSE' in os.environ:
